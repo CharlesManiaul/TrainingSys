@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Profile Details";
+}
+
+@model Profile
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                <img class="avatar avatar-xl rounded" style="width: 150px; height: 150px; background-image: url(/Images/pfp.jpg);"></img>
+                </div>
+                <div class="col">
+                    
+                    <h1 class="fw-bold">NAME: @Model.master.full_name</h1>
+                    <div class="my-2">
+                         EMPLOYEE ID :  @Model.master.employee_id
+                    </div>
+                    <div class="list-inline list-inline-dots text-secondary">
+                        <div class="list-inline-item">
+                        DEPARTMENT: @Model.master.department
+                        </div>
+                        <div class="list-inline-item">
+                        POSITION: @Model.master.position_title
+                        </div>
+                    </div>
+
+               
+
+                        
+                </div>
+
+            </div>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                            <div class="d-flex text-center text-lg-start mb-3">
+                                <div class="text-muted">
+                                    Show
+                                    <div class="mx-2 d-inline-block w-25">
+                                        <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                                    </div>
+                                    entries
+                                </div>
+
+                            </div>
+
+                            <div class="input-icon mb-3 ms-auto">
+                                <input type="search" class="search form-control" placeholder="Search">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                                </span>
+
+                            </div>
+                        </div>   
+                        
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable">
+
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Training Status</th>
+                                <th>Final Status</th>
+                                <th><button class="table-sort" data-sort="sort-Type">Exam Type</button></th>
+                                <th><button class="table-sort" data-sort="sort-ProjectName">Project Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-TrainingName">Training Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-fScore">Final Score</button></th>
+                                <th><button class="table-sort" data-sort="sort-tries">Tries Taken</button></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.profile)
+                            {  
+                                <tr>
+                                    @{
+                                        string badgeClass = "bg-secondary-lt";
+                                        switch (row.FinalStat)
+                                        {
+                                            case "Scheduled":
+                                                badgeClass = "bg-warning-lt";
+                                                break;
+                                            case "Finished":
+                                                badgeClass = "bg-success-lt";
+                                                break;
+                                            case "Passed":
+                                                badgeClass = "bg-success-lt";
+                                                break;
+                                            case "Failed":
+                                                badgeClass = "bg-danger-lt";
+                                                break;
+                                        }
+
+                                         
+                                        string badgeTrain = "bg-secondary-lt";
+                                        switch (row.TrainingStatus)
+                                        {
+                                            case "Absent":
+                                                badgeTrain = "bg-danger-lt";
+                                                break;
+                                            case "Attended":
+                                                badgeTrain = "bg-success-lt";
+                                                break;
+                                          
+                                        }
+
+                                    }
+
+                                        <td data-label="Training Status">
+                                            <span class="badge @badgeTrain me-1">@row.TrainingStatus</span>
+                                        </td>
+
+                                    <td data-label="Final Status">
+                                        <span class="badge @badgeClass me-1">@row.FinalStat</span>
+                                    </td>
+                                   
+                                    <td data-label="Title" class="text-nowrap sort-ProjectName">
+                                        <a href="ProfileExamDetails/@row.EmpId/@row.TEId/@row.PTId/@row.ExamId/@row.PMId" style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+                                    <td data-label="Schedule Date" class="text-nowrap sort-TrainingName">
+                                        <a href="ProfileExamDetails/@row.EmpId/@row.TEId/@row.PTId/@row.ExamId/@row.PMId" style="text-decoration: none; color: inherit;">@row.TrainingName</a>
+                                    </td>
+
+                                    <td data-label="Exam Type" class="text-nowrap sort-Type">
+                                        <a href="ProfileExamDetails/@row.EmpId/@row.TEId/@row.PTId/@row.ExamId/@row.PMId" style="text-decoration: none; color: inherit;">@row.ExamType</a>
+                                    </td>
+
+                                    <td data-label="Final Status" class=" text-nowrap sort-fScore">
+                                        <a href="ProfileExamDetails/@row.EmpId/@row.TEId/@row.PTId/@row.ExamId/@row.PMId" style="text-decoration: none; color: inherit;">@row.FinalScore</a>
+                                    </td>
+
+                                    <td data-label="Tries Taken" class=" text-nowrap sort-tries">
+                                        <a href="ProfileExamDetails/@row.EmpId/@row.TEId/@row.PTId/@row.ExamId/@row.PMId" style="text-decoration: none; color: inherit;">@row.ExamCounter</a>
+                                    </td>
+
+
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+            
+
+
+
+
+

@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Training Reports";
+}
+@model TrainMaster
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Report - Training Master
+                    <h2 class="page-title">
+                        All Trainings
+                    </h2>
+                </div>
+            </div>
+
+
+           
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                            <tr>
+
+                                <th><button class="table-sort" data-sort="sort-ID">Training ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Description">Description</button></th>
+                                <th><button class="table-sort" data-sort="sort-Validity">Validity</button></th>
+                                <th><button class="table-sort" data-sort="sort-Amount">Amount</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtdby">Created By</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtddate">Created Date</button></th>
+                            
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.trainMaster)
+                            {
+
+                                <tr>
+
+
+                                    <td data-label="Training Id" class="text-nowrap sort-ID">
+                                        <a  style="text-decoration: none; color: inherit;">@row.TId</a>
+                                    </td>
+
+                                    <td data-label="Training Title" class="text-nowrap sort-Title">
+                                        <a style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+
+                                    <td data-label="Description" class="text-nowrap sort-Description">
+                                        <a  style="text-decoration: none; color: inherit; ">@row.Description</a>
+                                    </td>
+
+
+                                    <td data-label="Validity" class="text-nowrap sort-Validity">
+                                        <a  style="text-decoration: none; color: inherit;">@row.Validity Months</a>
+                                    </td>
+
+                                    <td data-label="Amount" class="text-nowrap sort-Amount">
+                                        <a style="text-decoration: none; color: inherit;">@row.Amount </a>
+                                    </td>
+
+                                    <td data-label="Created By" class="text-nowrap sort-crtdby">
+                                        <a style="text-decoration: none; color: inherit;">@row.crtdBy </a>
+                                    </td>
+                                    <td data-label="Created Date" class="text-nowrap sort-crtddate">
+                                        <a style="text-decoration: none; color: inherit;">@row.crtdDate </a>
+                                    </td>
+
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

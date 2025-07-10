@@ -1,0 +1,320 @@
+﻿@{
+    ViewData["Title"] = "Group of Training";
+}
+@model TrainGroup
+
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Home - Group Training
+                    <h2 class="page-title">
+                        All Group of Trainings
+                    </h2>
+                </div>
+            </div>
+
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+
+                <a class="btn btn-instagram" data-bs-toggle="modal" data-bs-target="#modalGroup">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
+                    Create Group Training
+                </a>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                            <tr>
+
+                                <th><button class="table-sort" data-sort="sort-ID">Group ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Group Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtdBy">Created By</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtdDate">Date Created</button></th>
+                                <th><button class="table-sort" data-sort="sort-Total">Total Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Finished">Finished Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Scheduled">Scheduled Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Unscheduled">Unscheduled Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Progress">Progress</button></th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @if (!Model.trainGroup.Any())
+                            {
+                                <tr>
+                                    <td colspan="10" class="text-center text-muted">No data available</td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                @foreach (var row in Model.trainGroup)
+                                {
+                                    var totalSessions = row?.TotalTraining ?? 0;
+                                    var completedSessions = row?.Finished ?? 0;
+
+
+                                    // Calculate progress percentage
+                                    var progressPercentage = (totalSessions > 0)
+                                    ? ((double)completedSessions / totalSessions) * 100
+                                    : 0;
+
+                                    // Ensure the progress percentage does not exceed 100
+                                    progressPercentage = Math.Min(progressPercentage, 100);
+
+                                    <tr>
+
+
+                                        <td data-label="Group Id" class="text-nowrap sort-ID">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.PMId</a>
+                                        </td>
+
+                                        <td data-label="Group Training Title" class="text-nowrap sort-Title">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.ProjectName</a>
+                                        </td>
+
+                                        <td data-label="Created By" class="text-nowrap sort-crtdBy">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.CrtdBy</a>
+                                        </td>
+
+                                        <td data-label="Date Created" class="text-nowrap sort-crtdDate">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.CrtdDate</a>
+                                        </td>
+
+                                        <td data-label="Total Training" class="text-nowrap sort-Total">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.TotalTraining</a>
+                                        </td>
+
+                                        <td data-label="Finished Training" class="text-nowrap sort-Finished">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.Finished</a>
+                                        </td>
+
+                                        <td data-label="Scheduled Training" class="text-nowrap sort-Scheduled">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.Scheduled</a>
+                                        </td>
+
+                                        <td data-label="UnScheduled Training" class="text-nowrap sort-Unscheduled">
+                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.UnScheduled</a>
+                                        </td>
+
+
+
+                                        <td>
+                                            <div class="my-2">
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                                         role="progressbar"
+                                                         style="width: @progressPercentage%; font-size: 20px; color: #fff; line-height: 40px;">
+                                                        @progressPercentage.ToString("0.00")%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-pid="@row.PMId">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                            </button>
+                                        </td>
+
+
+                                    </tr>
+
+                                }
+
+                            }
+
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("addGroup", "Group", FormMethod.Post, new { id = "form-add-group-details" }))
+{
+
+    <div class="modal modal-blur fade" id="modalGroup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Group of Training</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Group Training Title</label>
+                        <div class="col">
+                            @Html.TextBoxFor(m => m.GroupTitle, new { @type = "text", @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Training </label>
+                        <div class="col">
+                            <select id="trainList" asp-for="SelectedTrainings" class="form-select tom-select" multiple>
+                                @for (var i = 0; i < Model.trainMaster.Count; i++)
+                                {
+                                    <option value="@Model.trainMaster[i].TId" data-id="@Model.trainMaster[i].Id">@Model.trainMaster[i].Title</option>
+                                }
+                            </select>
+                            <input type="hidden" id="trainIdTextBox" name="SelectedIds" />
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </a>
+                        <button class="btnAddGroup btn btn-primary">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            SAVE
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+
+
+@using (Html.BeginForm("DeleteGroup", "Group", FormMethod.Post))
+{
+
+    <div class="modal modal-blur fade" id="ModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Training?</h3>
+                    @Html.TextBoxFor(m => m.PMId)
+                    <div class="text-muted">Do you really want to delete this Training? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteAsset btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@section Scripts {
+
+    <script>
+
+        $(".btnAddGroup").click(function () {
+            $("#form-add-exam-details").submit()
+        })
+
+
+        // delete script
+        $(".btn_delete").click(function () {
+
+            const id = $(this).data("pid")
+            $("#PMId").val(id)
+        })
+
+
+        $('#trainList').on('change', function () {
+            var selectedOptions = $(this).find('option:selected');
+            var selectedIds = [];
+
+            selectedOptions.each(function () {
+                selectedIds.push($(this).attr('data-id'));  // Get Id from data-id
+            });
+
+            // Update the hidden field with the selected Ids
+            $('#trainIdTextBox').val(selectedIds.join(','));
+        });
+
+
+    </script>
+
+
+
+
+}

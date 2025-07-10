@@ -1,0 +1,294 @@
+﻿@{
+    ViewData["Title"] = "Scheduling";
+}
+@model ScheduleMaster
+
+    <div class="page-header d-print-none">
+        <div class="container-fluid">
+            <div class="row g-2 align-items-center">
+                <div class="col-6">
+                    <!-- Page pre-title -->
+                    <div class="page-pretitle">
+                        Scheduling - Training System
+                        <h2 class="page-title">
+                            Add Schedule Details
+                        </h2>
+                    </div>
+                </div>
+
+
+              @*   <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+
+
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalReport">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                        Schedule Training
+                    </a>
+
+                </div> *@
+            </div>
+
+        </div>
+    </div>
+
+    @using (Html.BeginForm("SaveSchedule", "Schedule", FormMethod.Post, new { id = "form-Save-Schedule" }))
+{
+    <div class="page-body">
+        <div class="container-fluid ">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-primary ms-auto" id="btnSave" type="submit">Save</button>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Grouped Textboxes -->
+                        <div class="col-lg-3 mb-3">
+                            
+                            <div class="mb-3">
+
+                                <label class="form-label">Training</label>
+
+                                <select class="form-select tom-select-subtitle" asp-for="TrainHead.TId" required>
+                                    <option selected disabled></option>
+                                    @foreach (var item in Model.training)
+                                    {
+                                        <option value="@item.TId" data-subtitle="@(item.IsWritten ? "Written" : "Practical")">@item.Title</option>
+                                    }
+                                </select>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">Select Schedule Date</label>
+                                <input type="text" id="scheduleDate" class="form-control date-input" required>
+
+                            </div>
+
+                            <div class="mb-3"> 
+
+                                <label class="form-label">Select Schedule Time</label>
+                                <input type="time" id="scheduleTime" class="form-control" required>
+
+                            </div>
+
+                            @* <input type="hidden" id="combinedDateTime" name="TrainHead.SchedDate"> *@
+
+                            @Html.TextBoxFor(m => m.TrainHead.SchedDate, new { @class = "form-control", @required = "required", @id = "combinedDateTime" ,@readonly = "true" })
+
+                            <div class="mb-3">
+
+                                <label class="form-label">Location</label>
+
+                                @Html.TextBoxFor(m => m.TrainHead.Location, new { @class = "form-control", @required = "required" })
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">Trainor</label>
+                                @Html.TextBoxFor(m => m.TrainHead.Trainor, new { @class = "form-control", @required = "required" })
+
+                            </div>
+
+
+                            <div class="input-group  d-flex align-items-end">
+                                <div class="mb-3 me-2">
+                                    <label class="form-label">Choose Attendee</label>
+                                    <div class="select-button-container">
+                                    <select id="attendeeSelect" class="form-select tom-select-subtitle2" asp-for="Attendee.EmpId">
+                                            <option selected disabled></option>
+                                        @foreach (var item in Model.scheduleMaster)
+                                            {
+                                                <option value="@item.employee_id"
+                                                    data-subtitle="@item.employee_id"
+                                                    data-subtitle2="@item.department"
+                                                    data-post="@item.position_title"
+                                                    data-fullname="@item.full_name"
+                                                    data-tid="@item.TId">
+                                                    @item.full_name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary btnAdd">Add</button>
+                                </div>
+                                        
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="col-lg-8 mb-3" id="details" style="display: none">
+                            <label class="form-label">Attendees</label>
+                            <div class="table-responsive">
+                                <table id="selectedItemsTable" class="table">
+                                    <thead>
+                                        <tr>
+                                            @* <th><button class="table-sort" data-sort="sort-employee_id">Employee ID</button></th> *@
+                                            <th>Employee ID</th>
+                                            <th>Full Name</th>
+                                            <th>Position</th>
+                                            <th>Department</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-tbody">
+
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    }
+
+
+  
+
+@section Scripts 
+{
+    <script>
+        $(document).ready(function () {
+            var lastSelectedValue = ''; // To store the last selected value
+            var i = 0; // Move i outside the click handler to keep track of the index
+
+            $('.btnAdd').on('click', function () {
+                var $select = $('#attendeeSelect');
+                var $selectedOption = $select.find('option:selected');
+
+                // Get the current selected value
+                var currentSelectedValue = $selectedOption.val();
+
+                // Check if no change or no option is selected
+                if (!currentSelectedValue || currentSelectedValue === lastSelectedValue) {
+                    alert('Please select a new attendee.');
+                    return;
+                }
+
+                // Extract data from selected option
+                var employeeId = $selectedOption.val();
+                var fullName = $selectedOption.data('fullname') || 'N/A';
+                var positionTitle = $selectedOption.data('post') || 'N/A';
+                var department = $selectedOption.data('subtitle2') || 'N/A';
+
+                // Check for duplicates
+                var isDuplicate = false;
+                $('#selectedItemsTable tbody tr').each(function () {
+                    var rowEmployeeId = $(this).find('td').eq(1).text().trim(); // Changed to eq(1) to get the right column
+                    if (rowEmployeeId === employeeId) {
+                        isDuplicate = true;
+                        return false; // Exit the loop early
+                    }
+                });
+
+                if (isDuplicate) {
+                    alert('This attendee is already added.');
+                    return;
+                }
+
+                // Show the table if hidden
+                var $detailsDiv = $('#details');
+                if ($detailsDiv.is(':hidden')) {
+                    $detailsDiv.show();
+                }
+
+                var $tableBody = $('#selectedItemsTable tbody');
+
+                // Create a new row element
+                var newRow = $('<tr>');
+
+                // Construct the row content using template literals
+                newRow.html(`
+         
+                    <td><input type="hidden" name="AttendeeDetails[${i}].EmpId" value="${employeeId}"/>${employeeId}</td>
+                    <td><input type="hidden" name="AttendeeDetails[${i}].fullname" value="${fullName}"/>${fullName}</td>
+                    <td><input type="hidden" name="AttendeeDetails[${i}].position" value="${positionTitle}"/>${positionTitle}</td>
+                    <td><input type="hidden" name="AttendeeDetails[${i}].department" value="${department}"/>${department}</td>
+                    <td><button class="remove-item-btn btn btn-danger btn-sm">Remove</button></td>
+                `);
+
+                // Append the new row to the table body
+                $tableBody.append(newRow);
+
+                i++; // Increment i after adding a row
+
+                // Update the last selected value
+                lastSelectedValue = currentSelectedValue;
+
+                // Optionally: Clear the selection or reset the dropdown
+                $select.prop('selectedIndex', 0);
+            });
+
+            // Event delegation for removing rows (assuming remove-item-btn is dynamically added)
+            $('#selectedItemsTable').on('click', '.remove-item-btn', function () {
+                $(this).closest('tr').remove();
+            });
+        });
+
+
+
+        $(document).ready(function () {
+            function updateCombinedDateTime() {
+                var date = $('#scheduleDate').val();
+                var time = $('#scheduleTime').val();
+                if (date && time) {
+                    $('#combinedDateTime').val( date + ' T ' + time + ':00'); // Format as YYYY-MM-DDTHH:MM:SS
+                }
+            }
+
+            $('#scheduleDate, #scheduleTime').on('change', updateCombinedDateTime);
+        });
+    </script>
+
+
+   @*  <script>
+    $(document).ready(function () {
+        $('#btnAdd').on('click', function () {
+            var $selectedOption = $('#attendeeSelect option:selected');
+            var empId = $selectedOption.val();
+            var fullName = $selectedOption.data('fullname');
+            var position = $selectedOption.data('post');
+            var department = $selectedOption.data('subtitle2');
+
+            if (empId && fullName) {
+                var newRow = `
+                    <tr>
+                        <td>${empId}</td>
+                        <td>${fullName}</td>
+                        <td>${position}</td>
+                        <td>${department}</td>
+                        <td><button type="button" class="btn btn-danger btnRemove">Remove</button></td>
+                    </tr>
+                `;
+                $('#tableBody').append(newRow);
+
+                // Show the table section if it's hidden
+                $('#details').show();
+            }
+        });
+
+        // Event delegation to handle row removal
+        $('#tableBody').on('click', '.btnRemove', function () {
+            $(this).closest('tr').remove();
+
+            // Hide the table section if there are no rows left
+            if ($('#tableBody').children().length === 0) {
+                $('#details').hide();
+            }
+        });
+    });
+    </script>
+ *@
+}
+

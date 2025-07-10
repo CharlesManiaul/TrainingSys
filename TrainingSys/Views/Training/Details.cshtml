@@ -1,0 +1,321 @@
+﻿@{
+    ViewData["Title"] = "Training Details";
+}
+@model TrainMaster
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Details - Training Master
+                    <h2 class="page-title">
+                        Training Details
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+
+
+                <a class="btn btn-success" id="btnUpdate">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-reload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.933 13.041a8 8 0 1 1 -9.925 -8.788c3.899 -1 7.935 1.007 9.425 4.747" /><path d="M20 4v5h-5" /></svg>
+
+                    Update
+                </a>
+
+                @*  <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalAddExam">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-text-increase"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 19v-10.5a3.5 3.5 0 1 1 7 0v10.5" /><path d="M4 13h7" /><path d="M18 9v6" /><path d="M21 12h-6" /></svg>
+                Add Examz
+                </a> *@
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+            @using (Html.BeginForm("UpdateTraining", "Training", FormMethod.Post, new { id = "form-update-header" }))
+            {
+                <div class="card-header">
+                    <div class="row">
+                        @Html.HiddenFor(m => m.TId)
+
+                        <!-- Title and Validity in the same row, centered -->
+                        <div class="col-4 mb-3">
+                            <label class="form-label">Title</label>
+                            @Html.TextBoxFor(m => m.Title, new { @type = "text", @class = "form-control" })
+                        </div>
+
+
+                        <div class="col-4 mb-3">
+                            <label class="form-label">Validity</label>
+                            <div class="d-flex align-items-center">
+                                @Html.TextBoxFor(m => m.Validity, new { @type = "number", @class = "form-control" })
+                                <span class="ms-2">Months</span>
+                            </div>
+                        </div>
+
+                        <!-- Description using full width in a new row -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Description</label>
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = 6 })
+                        </div>
+
+
+                    </div>
+                </div>
+            }
+
+
+            <div class="card-body">
+                <h3>Examination Details</h3>
+                <table class="table text-muted table-mobile-sm">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Created By</th>
+                            <th>Revisions</th>
+                            @*            <th>Action</th> *@
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.TrainingDetails)
+                        {
+                            <tr>
+                                <td data-label="Id" class="text-nowrap"><a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.Id</a></td>
+                                <td data-label="Title" class="text-nowrap"><a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.Title</a></td>
+                                <td data-label="Created By" class="text-nowrap"><a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.CrtdBy</a></td>
+                                <td data-label="Revisions" class="text-nowrap"><a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.Revision</a></td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@*MODAL Add Exam*@
+
+@*
+@using (Html.BeginForm("SaveExam", "Training", FormMethod.Post, new { id = "form-add-exam-details" }))
+{
+<div class="modal modal-blur fade" id="ModalAddExam" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-success"></div>
+            <div class="modal-body text-center py-4">
+
+                <h3>Choose Examination</h3>
+
+                <div class="row mb-3">
+                    <label class="form-label col-3 col-form-label required">Examination </label>
+                        <div class="col">
+                            <select class="form-select tom-select" asp-for="@Model.Id">
+                                @for (var i = 0; i < Model.exams.Count; i++)
+                                {
+                                    <option value="@Model.exams[i].Id">@Model.exams[i].Title</option>
+                                }
+                            </select>
+                        </div>
+                </div>
+
+            </div>
+                @Html.HiddenFor(m => m.TId)
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btnAddExam btn btn-success w-100">
+                                Add Exam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+ *@
+
+
+
+
+
+
+
+@*MODAL REMOVE EXAM*@
+@using (Html.BeginForm("DeleteExam", "Training", FormMethod.Post, new { id = "form-delete-exam-details" }))
+{
+
+    <div class="modal modal-blur fade" id="ModalDeleteExam" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Examination?</h3>
+                    @Html.HiddenFor(m => m.ExamDetails.Id, new { @id = "MId" })
+                    <div class="text-muted">Do you really want to delete this Examination? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteDetails btn btn-danger w-100" id="btnDeleteDetails">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- Modal for displaying QR code -->
+@* <div class="modal fade" id="ModalQR" tabindex="-1" aria-labelledby="ModalQRLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalQRLabel">QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column align-items-center justify-content-center text-center">
+                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid mb-2" />
+                <p id="qr-code-link"></p>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+@section Scripts {
+
+    <script>
+
+
+        $("#btnUpdate").click(function () {
+            $("#form-update-header").submit()
+        })
+
+        $("#btnQuestionSave").click(function () {
+            const id = $(this).data("id")
+            $("#wTID").val(id)
+            $("#form-Add-Question").submit()
+        })
+
+
+        $("#btnQuestionSaveEdit").click(function () {
+            $("#form-Edit-Question").submit()
+        })
+
+        $(".editQuestion").click(function () {
+            const wId = $(this).data("wid")
+            $("#view_wID").val(wId)
+            const tId = $(this).data("tid")
+            $("#view_tID").val(wId)
+            const INo = $(this).data("ino")
+            $("#view_INo").val(INo)
+            const Quest = $(this).data("quest")
+            $("#view_Quest").val(Quest)
+            const cA = $(this).data("ca")
+            $("#view_cA").val(cA)
+            const cB = $(this).data("cb")
+            $("#view_cB").val(cB)
+            const cC = $(this).data("cc")
+            $("#view_cC").val(cC)
+            const cD = $(this).data("cd")
+            $("#view_cD").val(cD)
+            const Ans = $(this).data("ans")
+            $("#view_Ans").val(Ans)
+
+
+        })
+
+
+        $(".btn_delete").click(function () {
+            const id = $(this).data("id")
+            $("#WId").val(id)
+
+        })
+
+        $(".btnAddExam").click(function () {
+            $("#form-add-exam-details").submit()
+        })
+
+
+
+        function generateQRCode(button) {
+            // Get the data-id attribute from the button
+            var id = button.getAttribute('data-id');
+
+            var baseUrl = window.location.origin;
+            // Construct the URL you want to encode into the QR code
+            var url = `${baseUrl}/Question/WrittenTest/${id}`;
+
+            // Construct the QR code URL
+            var qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+
+            // Set the src attribute of the QR code image in the modal
+            document.getElementById('qr-code-image').src = qrCodeUrl;
+
+            // Set the text content of the paragraph to display the URL
+            var qrCodeLink = document.getElementById('qr-code-link');
+            qrCodeLink.textContent = url;
+        }
+
+
+        $(".btnDeleteExam").click(function () {
+            const id = $(this).data("mid")
+
+            $("#MId").val(id)
+
+        })
+
+        $("#btnDeleteDetails").click(function () {
+            $("#form-delete-exam-details").submit()
+        })
+
+
+
+
+
+    </script>
+
+
+
+
+}

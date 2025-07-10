@@ -1,0 +1,675 @@
+﻿@{
+    ViewData["Title"] = "Details of Group";
+}
+@model TrainGroup
+
+
+
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Details - Group Training
+                    <h2 class="page-title">
+                        List of Training
+                    </h2>
+                </div>
+            </div>
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                @if (Model.TrainMaster.Any(m => m.Status != "Finished"))
+                {
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMore">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-plus">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 5v14m-7 -7h14" />
+                        </svg>
+                        Add More Training
+                    </a>
+                }
+
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+                            
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Status</th>
+                                <th>EXAMINATION</th>
+                                <th><button class="table-sort" data-sort="sort-ID">Training ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Description">Description</button></th>
+                                <th><button class="table-sort" data-sort="sort-Validity">Validity</button></th>
+                                <th><button class="table-sort" data-sort="sort-Amount">Amount</button></th>
+                                <th>Attendees</th>
+                                <th>Examination QR</th>
+                                <th>Post Evaluation QR</th>
+                                <th>Schedule</th>
+                                <th>Attendee</th>
+                                <th>Examination</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.TrainMaster)
+                            {
+
+                                <tr>
+
+                                    @{
+                                        string statusBadgeClass = "bg-secondary-lt";
+                                        string examBadgeClass = "bg-secondary-lt";
+                                        string examStatusText = (row.HasExam == false) ? "No Exam" : "Has Exam";
+                                        string examScheduleText = row.Status ?? "No Schedule";
+
+
+                                        // Set badge class for row.Status
+                                        switch (row.Status)
+                                        {
+                                            case "Scheduled":
+                                                statusBadgeClass = "bg-danger-lt";
+                                                break;
+                                            case "Rescheduled":
+                                                statusBadgeClass = "bg-warning-lt";
+                                                break;
+                                            case "Finished":
+                                                statusBadgeClass = "bg-success-lt";
+                                                break;
+                                            default:
+                                                statusBadgeClass = "bg-secondary-lt"; // Default badge class for "No Schedule"
+                                                break;
+                                        }
+
+                                        // Set badge class and status for row.HasExam
+                                        switch (row.HasExam)
+                                        {
+                                            case true:
+                                                examBadgeClass = "bg-success-lt";
+                                                
+                                                break;
+                                            case false:
+                                                examBadgeClass = "bg-danger-lt";
+                                              
+                                                break;
+                                        }
+                                    }
+
+
+                                    <td>
+                                        <span class="badge @statusBadgeClass me-1">@examScheduleText</span>
+                          
+                                    </td>
+
+                                    <td>
+                                        <input type="checkbox" class="form-check-input" asp-for="@row.HasExam"/>
+                                    </td>
+                                   
+                                    <td data-label="Training Id" class="text-nowrap sort-ID">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.TId</a>
+                                    </td>
+
+                                    <td data-label="Training Title" class="text-nowrap sort-Title">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+
+                                    <td data-label="Description" class="text-nowrap sort-Description">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit; ">@row.Description</a>
+                                    </td>
+
+                                    <td data-label="Validity" class="text-nowrap sort-Validity">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.Validity Months</a>
+                                    </td>
+
+                                    <td data-label="Amount" class="text-nowrap sort-Amount">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.Amount </a>
+                                    </td>
+
+
+                                    <td data-label="Total Attendee" class="text-nowrap sort-Amount">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.TotAttendee </a>
+                                    </td>
+
+                                    @if (row.Status == "Finished" && row.IsWritten == true) 
+                                    { 
+                                    <td data-label="QR">
+                                            <button type="button" class="btn btn-outline-teal btn_generate"
+                                                data-ptid="@row.PTId"
+                                                data-teid="@row.TEId"
+                                                data-examid="@row.Id"
+                                                data-written="@row.IsWritten"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#ModalQR"
+                                                onclick="generateQRCode(this)">
+                                            EXAMINATION QR
+                                        </button>
+                                    </td> 
+                                    }
+                                    else
+                                    {
+                                        <td data-label="QR"> </td>
+                                    }
+
+                                    @if (row.Status == "Finished")
+                                    {
+                                        <td data-label="QR">
+                                            <button type="button" class="btn btn-outline-lime btn_generate"
+                                                    data-examid="@row.Id"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#ModalQR"
+                                                    onclick="generatePostQRCode(this)">
+                                                POST-TRAINING QR
+                                            </button>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td data-label="QR"> </td>
+                                    }
+                                   
+
+                                   
+                                    <td data-label="Schedule">
+                                        <button type="button" class="btn btn-outline-primary btn_Sched" data-bs-toggle="modal" data-bs-target="#ModalSched" data-ptid="@row.PTId" data-status="@row.Status">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-clock"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.5 21h-4.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v3" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h10" /><path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M18 16.5v1.5l.5 .5" /></svg>
+                                        </button>
+                                    </td>
+
+                                    <td data-label="Attendee">
+                                        <button type="button" class="btn btn-outline-secondary btn_Attendee" data-bs-toggle="modal" data-bs-target="#ModalAddAttendee" data-atid="@row.PTId">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
+                                        </button>
+                                    </td>
+
+                                    <td data-label="Select Exam">
+                                        <button type="button" class="btn btn-outline-warning btn_addExam" data-bs-toggle="modal" data-bs-target="#ModalExam" data-eid="@row.PTId">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-pencil"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M10 18l5 -5a1.414 1.414 0 0 0 -2 -2l-5 5v2h2z" /></svg>
+                                        </button>
+                                    </td>
+
+                                    <td data-label="Action">
+                                        <button type="button" class="btn btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-id="@row.PTId">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                        </button>
+                                    </td>
+
+
+
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@*MODAL FOR ADD MORE TRAINING*@
+@using (Html.BeginForm("addMore", "Group", FormMethod.Post, new { id = "form-more-group-details" }))
+{
+    <div class="modal modal-blur fade" id="modalMore" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Group of Training</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                    @Html.HiddenFor(m => m.PMId)
+
+                    <div class="mb-3">
+                        <label class="form-label">Training </label>
+                        <div class="col">
+                            <select id="trainList" asp-for="SelectedTrainings" class="form-select tom-select" multiple>
+                                @for (var i = 0; i < Model.trainMaster.Count; i++)
+                                {
+                                    <option value="@Model.trainMaster[i].TId" data-id="@Model.trainMaster[i].Id">@Model.trainMaster[i].Title</option>
+                                }
+                            </select>
+                            <input type="hidden" id="trainIdTextBox" name="SelectedIds" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </a>
+                        <button class="btnAddGroup btn btn-primary">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            SAVE
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@*Modal Delete Training*@
+
+@using (Html.BeginForm("DeleteTrainingDetails", "Group", FormMethod.Post))
+{
+
+    <div class="modal modal-blur fade" id="ModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Training?</h3>
+                    @Html.HiddenFor(m => m.TMaster.PTId, new { @id = "delPTId", @name = "delPTId" })
+                    <div class="text-muted">Do you really want to delete this Training? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    @Html.HiddenFor(m => m.PMId)
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteAsset btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
+
+@*Modal Schedule Training*@
+@using (Html.BeginForm("SaveSchedule", "Group", FormMethod.Post, new { id = "form-sched-train" }))
+{
+    <!-- Modal -->
+    <div class="modal fade" id="ModalSched" tabindex="-1" aria-labelledby="trainingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trainingModalLabel">Training Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Grouped Textboxes -->
+                            <div class="col-lg-12 mb-3">
+
+                                @Html.HiddenFor(m => m.TrainHead.PTId, new { @id = "trainHeadPTId" })
+                                @Html.HiddenFor(m => m.TrainHead.Status, new { @id = "trainHeadStatus" })
+                                <div class="mb-3">
+                                    <label class="form-label">Select Schedule Date</label>
+                                    <input type="text" id="scheduleDate" class="form-control date-input" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select Schedule Time</label>
+                                    <input type="time" id="scheduleTime" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Combined Date and Time</label>
+                                    @Html.TextBoxFor(m => m.TrainHead.SchedDate, new { @class = "form-control", @required = "required", @id = "combinedDateTime", @readonly = "true" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    @Html.TextBoxFor(m => m.TrainHead.Location, new { @class = "form-control", @required = "required" })
+                                </div>
+                                @* tomselect *@
+                                <div class="mb-3">
+                                    <label class="form-label">Trainor</label>
+                                    <select class="form-select tom-select" asp-for="TrainHead.Trainor" required>
+                                        <option selected disabled></option>
+                                        @foreach (var item in Model.profiles)
+                                        {
+                                            <option value="@item.full_name">@item.full_name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.HiddenFor(m => m.PMId)
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+@*Modal for Attendees*@
+@using (Html.BeginForm("AddAttendee", "Group", FormMethod.Post, new { id = "form-add-" }))
+{
+    <div class="modal modal-blur fade" id="ModalAddAttendee" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-primary"></div>
+                <div class="modal-body text-center py-4">
+                    <h3>SELECT ATTENDEE/S</h3>
+                    <div class="input-group d-flex flex-column flex-md-row align-items-center">
+                        <div class="col mb-3">
+
+                            <div class="d-flex align-items-center">
+                                <label class="form-label mb-3 me-2">Attendee/s:</label>
+                                <div class="select-button-container col mb-3">
+                                    <select name="attendee[]" id="AttendeeDetails" class="form-select tom-select-subtitle2 fixed-width-select" multiple>
+                                        <option selected disabled></option>
+                                        @foreach (var item in Model.scheduleMaster)
+                                        {
+                                            <option value="@item.employee_id"
+                                                    data-subtitle="@item.employee_id"
+                                                    data-subtitle2="@item.department"
+                                                    data-post="@item.position_title"
+                                                    data-fullname="@item.full_name"
+                                                    data-tid="@item.TId">
+                                                @item.full_name
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.HiddenFor(m => m.PMId)
+                @Html.HiddenFor(m => m.TrainHead.PTId, new { @id = "APTId" })
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnAddAttendee btn btn-success w-100">
+                                    Add Attendee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@*Modal for Exam*@
+@using (Html.BeginForm("AddExam", "Group", FormMethod.Post, new { id = "form-add-examm" }))
+{
+    <div class="modal modal-blur fade" id="ModalExam" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Examination for Training</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @Html.HiddenFor(m => m.PMId)
+
+                    @Html.HiddenFor(m => m.PTId, new { @id = "EId" })
+
+                    <div class="mb-3">
+                        <label class="form-label">Examination </label>
+                        <div class="col">
+                            <select asp-for="ExamId" class="form-select tom-select">
+                                <option value=""> </option>
+                                <option value="0">No Exam</option>
+                                @for (var i = 0; i < Model.exam.Count; i++)
+                                {
+                                    <option value="@Model.exam[i].Id">@Model.exam[i].Title</option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </a>
+                        <button class="btnAddExam btn btn-primary">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            SAVE
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- Modal for displaying QR code -->
+<div class="modal fade" id="ModalQR" tabindex="-1" aria-labelledby="ModalQRLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalQRLabel">QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column align-items-center justify-content-center text-center">
+                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid mb-2" />
+                <p id="qr-code-link"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        // delete script
+        $(".btn_delete").click(function () {
+
+            const id = $(this).data("id")
+            $("#delPTId").val(id)
+        })
+
+        $(".btn_Sched").click(function () {
+
+            const ptid = $(this).data("ptid")
+            const status = $(this).data("status")
+            $("#trainHeadPTId").val(ptid)
+            $("#trainHeadStatus").val(status)
+        })
+
+
+        $(".btn_Attendee").click(function () {
+
+            const atid = $(this).data("atid")
+            $("#APTId").val(atid)
+        })
+
+
+        $(".btn_addExam").click(function () {
+
+            const eid = $(this).data("eid")
+            $("#EId").val(eid)
+        })
+
+
+        $('#trainList').on('change', function () {
+            var selectedOptions = $(this).find('option:selected');
+            var selectedIds = [];
+
+            selectedOptions.each(function () {
+                selectedIds.push($(this).attr('data-id'));  // Get Id from data-id      
+            });
+
+            // Update the hidden field with the selected Ids
+            $('#trainIdTextBox').val(selectedIds.join(','));
+        });
+
+
+        $(document).ready(function () {
+            function updateCombinedDateTime() {
+                var date = $('#scheduleDate').val();
+                var time = $('#scheduleTime').val();
+                if (date && time) {
+                    $('#combinedDateTime').val(date + ' T ' + time + ':00'); // Format as YYYY-MM-DD HH:MM:SS
+                } else {
+                    $('#combinedDateTime').val(''); // Clear if either date or time is missing
+                }
+            }
+
+            $('#scheduleDate, #scheduleTime').on('change', updateCombinedDateTime);
+        });
+
+        //for EXAM QR
+
+        function generateQRCode(button) {
+            // Retrieve the data attributes from the clicked button
+            const Id = button.getAttribute('data-examid');
+            const TEId = button.getAttribute('data-teid');
+            const isWritten = button.getAttribute('data-written') === "true" || button.getAttribute('data-written') === "True";
+
+            // Ensure ExamId and TEId are available
+            if (!Id || !TEId) {
+                console.error('ExamId or TEId is missing');
+                return;
+            }
+
+            // Construct the base URL
+            const baseUrl = window.location.origin;
+            let url;
+
+            if (isWritten) {
+                url = `${baseUrl}/Question/WrittenTest/${TEId}/${Id}`;
+            } else {
+                url = `${baseUrl}/Question/PracticalTest/${TEId}/${Id}`;
+            }
+
+            console.log(`Generated URL: ${url}`); // Debugging log
+
+            // Generate the QR code URL
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+
+            // Set the QR code image in the modal
+            document.getElementById('qr-code-image').src = qrCodeUrl;
+
+            // Set the text content of the paragraph to display the URL
+            document.getElementById('qr-code-link').textContent = url;
+        }
+
+
+
+        //POST QR CODE
+
+        function generatePostQRCode(button) {
+            // Retrieve the data attributes from the clicked button
+            const Id = button.getAttribute('data-examid');
+         
+            // Ensure ExamId and TEId are available
+            if (!Id) {
+                console.error('ExamId is missing');
+                return;
+            }
+
+            // Construct the base URL
+            const baseUrl = window.location.origin;
+            let url;
+
+           
+                url = `${baseUrl}/Question/Evaluation/${Id}`;
+           
+
+            console.log(`Generated URL: ${url}`); // Debugging log
+
+            // Generate the QR code URL
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+
+            // Set the QR code image in the modal
+            document.getElementById('qr-code-image').src = qrCodeUrl;
+
+            // Set the text content of the paragraph to display the URL
+            document.getElementById('qr-code-link').textContent = url;
+        }
+
+    </script>
+}

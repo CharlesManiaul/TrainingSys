@@ -1,0 +1,163 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Report - Exam Master
+                    <h2 class="page-title">
+                        All Examination
+                    </h2>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Status</th>
+                                <th><button class="table-sort" data-sort="sort-ID">ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Examination Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Revision">Revision</button></th>
+                                <th><button class="table-sort" data-sort="sort-Type">Type</button></th>
+                                <th><button class="table-sort" data-sort="sort-Created">Created By</button></th>
+                                <th><button class="table-sort" data-sort="sort-RevisionBy">Created Date</button></th>
+                                <th><button class="table-sort" data-sort="sort-Created">Revision By</button></th>
+                                <th><button class="table-sort" data-sort="sort-RevisionBy">Revision Date</button></th>
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.exam)
+                            {
+
+                                <tr>
+                                    @{
+                                        string badgeClass = "bg-secondary-lt";
+                                        switch (row.Status)
+                                        {
+                                            case "Open":
+                                                badgeClass = "bg-warning-lt";
+                                                break;
+                                            case "Finalized":
+                                                badgeClass = "bg-success-lt";
+                                                break;
+
+                                            case "For revision":
+                                                badgeClass = "bg-rss-lt";
+                                                break;
+
+
+                                        }
+                                    }
+
+                                    <td>
+                                        <span class="badge @badgeClass me-1">@row.Status</span>
+                                    </td>
+
+
+                                    <td data-label="Training Id" class="text-nowrap sort-ID">
+                                        <a  style="text-decoration: none; color: inherit;">@row.Id</a>
+                                    </td>
+
+                                    <td data-label="Training Title" class="text-nowrap sort-Title">
+                                        <a style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+
+                                    <td data-label="Description" class="text-nowrap sort-Revision">
+                                        <a style="text-decoration: none; color: inherit; ">@row.Revision</a>
+                                    </td>
+
+                                    <td data-label="Type" class="text-nowrap sort-Type">
+                                        <a  style="text-decoration: none; color: inherit;">
+                                            @(row.IsWritten ? "Written" : "Practical")
+                                        </a>
+                                    </td>
+
+
+                                    <td data-label="Created By" class="text-nowrap sort-Created">
+                                        <a style="text-decoration: none; color: inherit; ">@row.CrtdBy</a>
+                                    </td>
+
+                                    <td data-label="Created Date" class="text-nowrap sort-CreatedDate">
+                                        <a style="text-decoration: none; color: inherit; ">@row.CrtdDate</a>
+                                    </td>
+
+                                    <td data-label="Revision By" class="text-nowrap sort-RevisionBy">
+                                        <a  style="text-decoration: none; color: inherit; ">@row.ReviseBy</a>
+                                    </td>
+                                    <td data-label="Revision Date" class="text-nowrap sort-RevisionBy">
+                                        <a style="text-decoration: none; color: inherit; ">@row.ReviseDate</a>
+                                    </td>
+
+
+
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

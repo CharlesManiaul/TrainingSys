@@ -1,0 +1,348 @@
+﻿@{
+    ViewData["Title"] = "Exam Maker";
+}
+@model Exam
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Exam - Exam Master
+                    <h2 class="page-title">
+                        All Examination
+                    </h2>
+                </div>
+            </div>
+
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalReport">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M12 5l0 14" />
+                        <path d="M5 12l14 0" />
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h4l6 6v10a2 2 0 0 1 -2 2z" />
+                    </svg>
+                    Create Examination
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Status</th>
+                                <th><button class="table-sort" data-sort="sort-ID">ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Examination Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Revision">Revision</button></th>
+                                <th><button class="table-sort" data-sort="sort-Type">Type</button></th>
+                                <th><button class="table-sort" data-sort="sort-Created">Created By</button></th>
+                                <th><button class="table-sort" data-sort="sort-RevisionBy">Revision By</button></th>
+
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+                            @if (!Model.exam.Any())
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">No data available</td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                @foreach (var row in Model.exam)
+                                {
+
+                                    <tr>
+                                        @{
+                                            string badgeClass = "bg-secondary-lt";
+                                            switch (row.Status)
+                                            {
+                                                case "Open":
+                                                    badgeClass = "bg-warning-lt";
+                                                    break;
+                                                case "Finalized":
+                                                    badgeClass = "bg-success-lt";
+                                                    break;
+
+                                                case "For revision":
+                                                    badgeClass = "bg-rss-lt";
+                                                    break;
+
+
+                                            }
+                                        }
+
+                                        <td>
+                                            <span class="badge @badgeClass me-1">@row.Status</span>
+                                        </td>
+
+
+
+
+
+
+
+
+                                        <td data-label="Training Id" class="text-nowrap sort-ID">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit;">@row.Id</a>
+                                        </td>
+
+                                        <td data-label="Training Title" class="text-nowrap sort-Title">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit;">@row.Title</a>
+                                        </td>
+
+
+                                        <td data-label="Description" class="text-nowrap sort-Revision">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.Revision</a>
+                                        </td>
+
+                                        <td data-label="Type" class="text-nowrap sort-Type">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit;">
+                                                @(row.IsWritten ? "Written" : "Practical")
+                                            </a>
+                                        </td>
+
+
+                                        <td data-label="Created By" class="text-nowrap sort-Created">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.CrtdBy</a>
+                                        </td>
+
+                                        <td data-label="Revision By" class="text-nowrap sort-RevisionBy">
+                                            <a href="/Question/Details/@row.Id" style="text-decoration: none; color: inherit; ">@row.ReviseBy</a>
+                                        </td>
+
+
+                                        <td data-label="Action">
+                                            <button type="button" class="btn btn-icon btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-id="@row.Id">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                            </button>
+                                        </td>
+
+
+                                    </tr>
+
+                                }
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("AddExam", "Question", FormMethod.Post, new { id = "form-save" }))
+{
+    <div class="modal modal-blur fade" id="modalReport" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Exam</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 ">
+                        <label class="form-label">Title</label>
+                        @Html.TextBoxFor(m => m.Title, new { @type = "text", @class = "form-control" })
+                    </div>
+
+                    <div class="mb-3" id="passingScoreField">
+                        <label class="form-label">Passing Score(%)</label>
+                        @Html.TextBoxFor(m => m.PassingScore, new
+                            {
+                                @type = "number",
+                                @class = "form-control",
+                                @min = "50",
+                                @max = "100"
+                            })
+                        <div class="invalid-feedback">
+                            Passing Score must be between 50 and 100.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Type of Training</label>
+                        <div class="form-selectgroup-boxes row mb-3">
+                            <div class="col-6">
+                                <label class="form-selectgroup-item">
+                                    <input type="radio" asp-for="IsWritten" value="True" class="form-selectgroup-input" id="writtenType">
+                                    <span class="form-selectgroup-label d-flex align-items-center p-3">
+                                        <span class="me-3"><span class="form-selectgroup-check"></span></span>
+                                        <span class="form-selectgroup-label-content">
+                                            <span class="form-selectgroup-title strong mb-1">Written</span>
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-selectgroup-item">
+                                    <input type="radio" asp-for="IsWritten" value="False" class="form-selectgroup-input" id="practicalType">
+                                    <span class="form-selectgroup-label d-flex align-items-center p-3">
+                                        <span class="me-3"><span class="form-selectgroup-check"></span></span>
+                                        <span class="form-selectgroup-label-content">
+                                            <span class="form-selectgroup-title strong mb-1">Practical</span>
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <button class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24V24H0z" fill="none" /><path d="M12 5v14M5 12h14" /></svg>
+                        SAVE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+@using (Html.BeginForm("DeleteExam", "Question", FormMethod.Post))
+{
+
+    <div class="modal modal-blur fade" id="ModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Training?</h3>
+                    @Html.HiddenFor(m => m.Id)
+                    <div class="text-muted">Do you really want to delete this Training? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteAsset btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+}
+
+
+@section Scripts {
+
+    <script>
+    // delete script
+        $(".btn_delete").click(function () {
+
+            const id = $(this).data("id")
+            $("#Id").val(id)
+        })
+
+
+        
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const $passingScoreInput = $("input[name='PassingScore']");
+
+            $passingScoreInput.on("input", function () {
+                let val = parseInt($(this).val(), 10);
+                $(this).removeClass("is-invalid");
+                if (!isNaN(val) && (val < 50 || val > 100)) {
+                    $(this).addClass("is-invalid");
+                }
+            });
+
+            $('#modalReport').on('hidden.bs.modal', function () {
+                const $form = $('#form-save');
+
+                // Reset all form inputs
+                $form[0].reset();
+
+                // Remove validation styling
+                $form.find('.is-invalid, .is-valid').removeClass('is-invalid is-valid');
+
+                // If jQuery validation is used, reset its messages
+                if ($form.data('validator')) {
+                    $form.validate().resetForm();
+                }
+            });
+        });
+    </script>
+
+}

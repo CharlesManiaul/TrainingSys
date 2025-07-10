@@ -1,0 +1,29 @@
+﻿@model List<Attachment>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="attachmentModalLabel"><i class="bi bi-paperclip"></i> Attachments</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    @if (Model.Any())
+    {
+        <ul id="attachmentList" class="list-group list-group-flush">
+            @foreach (var row in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="@Url.Action("GetAttachment", "Group", new { fileName = row.FileName })" target="_blank" class="text-decoration-none text-dark">
+                        @row.FileName
+                    </a>
+                    
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">No attachments available.</p>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+</div>

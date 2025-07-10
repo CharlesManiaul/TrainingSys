@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Project Report";
+}
+@model TrainGroup
+
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Report - Group Training
+                    <h2 class="page-title">
+                      Project Report
+                    </h2>
+                </div>
+            </div>
+
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Project Report">
+
+                        <thead class="table-thead">
+                            <tr>
+
+                                <th><button class="table-sort" data-sort="sort-ID">Group ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Group Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtdBy">Created By</button></th>
+                                <th><button class="table-sort" data-sort="sort-crtdDate">Date Created</button></th>
+                                <th><button class="table-sort" data-sort="sort-Total">Total Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Scheduled">Finished Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Scheduled">Scheduled Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-Unscheduled">Unscheduled Training</button></th>
+                               @*  <th><button class="table-sort" data-sort="sort-Progress">Progress</button></th> *@
+                   
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.trainGroup)
+                            {
+                                var totalSessions = row?.TotalTraining ?? 0;
+                                var completedSessions = row?.Finished ?? 0;
+
+
+                                // Calculate progress percentage
+                                var progressPercentage = (totalSessions > 0)
+                                ? ((double)completedSessions / totalSessions) * 100
+                                : 0;
+
+                                // Ensure the progress percentage does not exceed 100
+                                progressPercentage = Math.Min(progressPercentage, 100);
+
+                                <tr>
+
+
+                                    <td data-label="Group Id" class="text-nowrap sort-ID">
+                                        <a  style="text-decoration: none; color: inherit;">@row.PMId</a>
+                                    </td>
+
+                                    <td data-label="Group Training Title" class="text-nowrap sort-Title">
+                                        <a  style="text-decoration: none; color: inherit;">@row.ProjectName</a>
+                                    </td>
+
+                                    <td data-label="Created By" class="text-nowrap sort-crtdBy">
+                                        <a  style="text-decoration: none; color: inherit;">@row.CrtdBy</a>
+                                    </td>
+
+                                    <td data-label="Date Created" class="text-nowrap sort-crtdDate">
+                                        <a  style="text-decoration: none; color: inherit;">@row.CrtdDate</a>
+                                    </td>
+
+                                    <td data-label="Total Training" class="text-nowrap sort-Total">
+                                        <a style="text-decoration: none; color: inherit;">@row.TotalTraining</a>
+                                    </td>
+                                    <td data-label="Finished Training" class="text-nowrap sort-Finished">
+                                        <a style="text-decoration: none; color: inherit;">@row.Finished</a>
+                                    </td>
+
+                                    <td data-label="Scheduled Training" class="text-nowrap sort-Scheduled">
+                                        <a style="text-decoration: none; color: inherit;">@row.Scheduled</a>
+                                    </td>
+
+                                    <td data-label="UnScheduled Training" class="text-nowrap sort-Unscheduled">
+                                        <a style="text-decoration: none; color: inherit;">@row.UnScheduled</a>
+                                    </td>
+
+
+
+                                   @*  <td>
+                                        <div class="my-2">
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                                     role="progressbar"
+                                                     style="width: @progressPercentage%; font-size: 20px; color: #fff; line-height: 40px;">
+                                                    @progressPercentage.ToString("0.00")%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+ *@
+                                  
+
+
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

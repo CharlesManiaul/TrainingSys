@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Thank You";
+    Layout = null;
+}
+
+
+    <link rel="stylesheet" href="~/css/tabler.min.css" />
+    <link rel="stylesheet" href="~/css/tabler-vendors.min.css" />
+    <link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css?1684106062" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+
+
+
+<div class="page-wrapper">
+    <div class="container-xl">
+        <div class="page-body">
+            <div class="container-tight py-4">
+                <div class="empty">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="56" height="56" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M5 12l5 5l10 -10" />
+                        </svg>
+                    </div>
+                    <p class="empty-title">Thank you!</p>
+                    <p class="empty-subtitle text-muted">
+                        Your submission has been received successfully.
+                    </p>
+                    <div class="empty-action">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/list.js/dist/list.js"></script>
+    <script src="~/lib/litepicker/dist/litepicker.js"></script>
+    <script src="~/lib/tom-select/dist/js/tom-select.base.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+
+
+
+@*error*@
+<div class="modal modal-blur fade" id="error-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="error-title" class="modal-title">@TempData["Error Title"]</div>
+                <div id="error-message">@TempData["Error Message"]</div>
+            </div>
+            <div class="modal-footer">
+                <button id="error-ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*success*@
+<div class="modal modal-blur fade" id="success-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="success-title" class="modal-title">@TempData["Success Title"]</div>
+                <div id="success-message">@TempData["Success Message"]</div>
+            </div>
+            <div class="modal-footer">
+                <button id="success-ok" type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+    $(document).ready(function () {
+
+            if ($("#success-title").html() != "") {
+                $("#success-modal").modal("show")
+            }
+
+            if ($("#error-title").html() != "") {
+                $("#error-modal").modal("show")
+            }
+
+
+        })
+    </script>
+
+}

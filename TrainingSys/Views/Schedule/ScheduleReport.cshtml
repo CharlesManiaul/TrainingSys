@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Scheduling";
+}
+@model ScheduleMaster
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Report - Training System
+                    <h2 class="page-title">
+                        Schedule
+                    </h2>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Status</th>
+                                <th><button class="table-sort" data-sort="sort-Training">Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-SchedDate">Scheduled Date</button></th>
+                                <th><button class="table-sort" data-sort="sort-EndDate">End Date</button></th>
+                                <th><button class="table-sort" data-sort="sort-Location">Location</button></th>
+                                <th><button class="table-sort" data-sort="sort-Trainor">Trainor</button></th>
+                                <th><button class="table-sort" data-sort="sort-EndDate">End Date</button></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @foreach (var row in Model.trainHead)
+                            {
+
+                                string badgeClass = "bg-secondary-lt";
+                                switch (row.Status)
+                                {
+                                    case "Scheduled":
+                                        badgeClass = "bg-warning-lt";
+                                        break;
+                                    case "Finished":
+                                        badgeClass = "bg-success-lt";
+                                        break;
+                                    case "Cancelled":
+                                        badgeClass = "bg-danger-lt";
+                                        break;
+                                    case "Ongoing":
+                                        badgeClass = "bg-teal-lt";
+                                        break;
+                                }
+
+
+                                <tr>
+                                    <td>
+                                        <span class="badge @badgeClass me-1">@row.Status</span>
+                                    </td>
+
+                                    <td data-label="Training" class="text-nowrap sort-Training">
+                                        <a  style="text-decoration: none; color: inherit;">@row.title</a>
+                                    </td>
+
+                                    <td data-label="Scheduled Date" class="text-nowrap sort-SchedDate">
+                                        <a  style="text-decoration: none; color: inherit;">@row.SchedDate?.ToString("yyyy/MM/dd HH:mm:ss")</a>
+                                    </td>
+
+                                     <td data-label="End Date" class="text-nowrap sort-EndDate">
+                                        <a  style="text-decoration: none; color: inherit;">@row.EndDate?.ToString("yyyy/MM/dd HH:mm:ss")</a>
+                                    </td>
+
+                                    <td data-label="Location" class="text-nowrap sort-Location">
+                                        <a style="text-decoration: none; color: inherit;">@row.Location</a>
+                                    </td>
+
+                                    <td data-label="Trainor" class="text-nowrap sort-Trainor">
+                                        <a style="text-decoration: none; color: inherit;">@row.Trainor</a>
+                                    </td>
+
+                                    <td data-label="End Date" class="text-nowrap sort-EndDate">
+                                        <a style="text-decoration: none; color: inherit;">@row.EndDate</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

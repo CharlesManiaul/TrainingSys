@@ -1,0 +1,438 @@
+﻿@{
+    ViewData["Title"] = "Training";
+}
+@model TrainMaster
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Training - Training Master
+                    <h2 class="page-title">
+                        All Trainings
+                    </h2>
+                </div>
+            </div>
+
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+
+
+                <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalReport">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+                        <path d="M6 10v6c0 3.866 3.582 7 8 7s8 -3.134 8 -7v-6" />
+                        <path d="M12 15v1" />
+                    </svg>
+                    Create Training
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                            <tr>
+
+                                <th><button class="table-sort" data-sort="sort-ID">Training ID</button></th>
+                                <th><button class="table-sort" data-sort="sort-Title">Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Description">Description</button></th>
+
+                                <th><button class="table-sort" data-sort="sort-Validity">Validity</button></th>
+                                <th><button class="table-sort" data-sort="sort-Amount">Amount</button></th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @if (!Model.trainMaster.Any())
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No data available</td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                @foreach (var row in Model.trainMaster)
+                            {
+
+                                <tr class="editTraining"
+                                    data-bs-toggle="modal" data-bs-target="#modal-editTraining"
+                                    data-tid="@row.TId"
+                                    data-title="@row.Title"
+                                    data-desc="@row.Description"
+                                    data-amount="@row.Amount"
+                                    data-validity="@row.Validity">
+
+
+                                    <td data-label="Training Id" class="text-nowrap sort-ID">
+                                        <a style="text-decoration: none; color: inherit;">@row.TId</a>
+                                    </td>
+
+                                    <td data-label="Training Title" class="text-nowrap sort-Title">
+                                        <a style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+
+                                    <td data-label="Description" class="text-nowrap sort-Description">
+                                        <a style="text-decoration: none; color: inherit; ">@row.Description</a>
+                                    </td>
+
+
+                                    <td data-label="Validity" class="text-nowrap sort-Validity">
+                                        <a style="text-decoration: none; color: inherit;">@row.Validity Months</a>
+                                    </td>
+
+                                    <td data-label="Amount" class="text-nowrap sort-Amount">
+                                        <a style="text-decoration: none; color: inherit;">@row.Amount </a>
+                                    </td>
+
+
+                                    @* <td data-label="Examination" class="text-nowrap">
+                                <button type="button" class="btn btn-outline-primary btn_generate"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ModalQR"
+                                data-id="@row.TId"
+                                onclick="generateQRCode(this)">
+                                GENERATE QR
+                                </button>
+                                </td> *@
+
+
+
+
+
+
+
+
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-id="@row.TId">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                        </button>
+                                    </td>
+
+
+                                </tr>
+
+                            }
+
+                            }
+                            
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("AddTraining", "Training", FormMethod.Post))
+{
+    <div class="modal modal-blur fade" id="modalReport" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Training</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="mb-3 ">
+                        <label class="form-label">Title</label>
+
+                        @Html.TextBoxFor(m => m.Title, new { @type = "text", @class = "form-control" })
+                    </div>
+
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = 6 })
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        @Html.TextBoxFor(m => m.Amount, new { @type = "number", @class = "form-control" })
+
+                    </div>
+
+                    <div class="row align-items-center mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Validity</label>
+                            @Html.TextBoxFor(m => m.Validity, new { @type = "number", @class = "form-control" })
+                        </div>
+
+                        <div class="col-6">
+                            <h3 class="mb-0">Months</h3>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </a>
+                        <button class="btn btn-primary">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                            SAVE
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@*Modal Delete Training*@
+
+@using (Html.BeginForm("DeleteTraining", "Training", FormMethod.Post))
+{
+
+    <div class="modal modal-blur fade" id="ModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Training?</h3>
+                    @Html.HiddenFor(m => m.TId)
+                    <div class="text-muted">Do you really want to delete this Training? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteAsset btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.TId)
+}
+
+
+
+@using (Html.BeginForm("UpdateTraining", "Training", FormMethod.Post))
+{
+    <div class="modal modal-blur fade" id="modal-editTraining" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">EDIT QUESTION</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row g-2 align-items-center">
+                        <div class="col-6">
+
+                            <h3>Edit Information</h3>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 ">
+                        <label class="form-label">Title</label>
+
+                        @Html.TextBoxFor(m => m.Title, new { @type = "text", @class = "form-control", @id = "view_title" })
+                    </div>
+
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = 6, @id = "view_desc" })
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        @Html.TextBoxFor(m => m.Amount, new { @type = "number", @class = "form-control", @id = "view_amount" })
+
+                    </div>
+
+                    <div class="row align-items-center mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Validity</label>
+                            @Html.TextBoxFor(m => m.Validity, new { @type = "number", @class = "form-control", @id = "view_validity" })
+                        </div>
+
+                        <div class="col-6">
+                            <h3 class="mb-0">Months</h3>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.TId, new { @id = "view_tid" })
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="btnEditTraining">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/check -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal for displaying QR code -->
+<div class="modal fade" id="ModalQR" tabindex="-1" aria-labelledby="ModalQRLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalQRLabel">QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column align-items-center justify-content-center text-center">
+                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid mb-2" />
+                <p id="qr-code-link"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+        $(".editTraining").click(function () {
+            const title = $(this).data("title")
+            $("#view_title").val(title)
+            const desc = $(this).data("desc")
+            $("#view_desc").val(desc)
+            const amount = $(this).data("amount")
+            $("#view_amount").val(amount)
+            const validity = $(this).data("validity")
+            $("#view_validity").val(validity)
+            const tid = $(this).data("tid")
+            $("#view_tid").val(tid)
+
+        })
+
+
+
+        // delete script
+        $(".btn_delete").click(function () {
+
+            const id = $(this).data("id")
+            $("#TId").val(id)
+        })
+
+
+        function generateQRCode(button) {
+            // Get the data-id attribute from the button
+            var id = button.getAttribute('data-id');
+
+            // Construct the URL you want to encode into the QR code
+            var url = `Question/WrittenTest/${id}`;
+
+            // Construct the QR code URL
+            var qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+
+            // Set the src attribute of the QR code image in the modal
+            document.getElementById('qr-code-image').src = qrCodeUrl;
+
+            // Set the text content of the paragraph to display the URL
+            var qrCodeLink = document.getElementById('qr-code-link');
+            qrCodeLink.textContent = url;
+        }
+    </script>
+
+
+
+
+}

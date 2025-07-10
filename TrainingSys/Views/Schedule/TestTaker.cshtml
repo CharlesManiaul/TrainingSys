@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Taken Test Report";
+}
+@model TestTaker
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Report - Training System
+                    <h2 class="page-title">
+                        Test Taken
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+                    </div>
+
+                </div>
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm">
+
+                        <thead class="table-thead">
+                            <tr>
+                                <th><button class="table-sort" data-sort="sort-Project">Project Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-Training">Training Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-Type">Type</button></th>
+                                <th><button class="table-sort" data-sort="sort-Status">Status</button></th>
+                                <th><button class="table-sort" data-sort="sort-Employee">Employee Id</button></th>
+                                <th><button class="table-sort" data-sort="sort-Name">Employee Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-Position">Position</button></th>
+                                <th><button class="table-sort" data-sort="sort-Score">Score</button></th>
+                                <th><button class="table-sort" data-sort="sort-Date">Date</button></th>
+                                <th><button class="table-sort" data-sort="sort-Tries">Tries</button></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @foreach (var row in Model.testTaker)
+                            {
+                                string badgeClass = "bg-secondary-lt";
+                                switch (row.FinalStat)
+                                {
+                                    case "Failed":
+                                        badgeClass = "bg-warning-lt";
+                                        break;
+                                    case "Passed":
+                                        badgeClass = "bg-success-lt";
+                                        break;
+
+                                }
+                            <tr>
+
+                                <td data-label="Id" class="text-nowrap sort-Id">
+                                    <a style="text-decoration: none; color: inherit;">@row.ProjectName</a>
+                                </td>
+
+                                    <td data-label="Exam Id" class="text-nowrap sort-Training">
+                                    <a style="text-decoration: none; color: inherit;">@row.TrainingName</a>
+                                </td>
+
+                                <td data-label="Exam Type" class="text-nowrap sort-Type">
+                                    <a style="text-decoration: none; color: inherit;">@row.ExamType</a>
+                                </td>
+
+                                 <td>
+                                        <span class="badge @badgeClass me-1">@row.FinalStat</span>
+                                </td>
+
+                                  <td data-label="Employee Id" class="text-nowrap sort-Employee">
+                                    <a style="text-decoration: none; color: inherit;">@row.EmpId</a>
+                                </td>
+
+                                <td data-label="Employee Name" class="text-nowrap sort-Name">
+                                    <a style="text-decoration: none; color: inherit;">@row.fullName</a>
+                                </td>
+                                  <td data-label="Position" class="text-nowrap sort-Position">
+                                    <a style="text-decoration: none; color: inherit;">@row.Position</a>
+                                </td>
+
+                                 <td data-label="Score" class="text-nowrap sort-Score">
+                                    <a style="text-decoration: none; color: inherit;">@row.FinalScore</a>
+                                </td>
+
+                                <td data-label="Date" class="text-nowrap sort-Date">
+                                    <a style="text-decoration: none; color: inherit;">@row.ExamDate</a>
+                                </td>
+
+                                <td data-label="Tries" class="text-nowrap sort-Tries">
+                                    <a style="text-decoration: none; color: inherit;">@row.ExamCounter</a>
+                                </td>
+
+                                    
+                            </tr>
+                               
+                            }
+                        </tbody>
+
+
+                    </table>
+                </div>
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

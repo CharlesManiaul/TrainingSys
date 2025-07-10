@@ -1,0 +1,502 @@
+﻿@{
+    ViewData["Title"] = "Post-Training Evaluation Form";
+    Layout = null;
+}
+
+@model Evaluation
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Training Evaluation Form</title>
+
+    <!-- Tabler CSS -->
+    <link rel="stylesheet" href="~/css/tabler.min.css" />
+    <link rel="stylesheet" href="~/css/tabler-vendors.min.css" />
+    <link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css?1684106062" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .page-header {
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<!-- Page Header -->
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-12 text-center">
+                <div class="page-pretitle" ">
+                    <h2> Post-Training Evaluation Form </h2>
+                    <p>Please fill out the form below to help us improve our training programs.</p>
+                </div>
+             
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    @using (Html.BeginForm("SaveEvaluation", "Question", FormMethod.Post, new { id = "form-save-eval" }))
+    {
+        <!-- Trainee Info -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Trainee Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="TraineeName">Trainee ID Number:</label>
+                            @Html.TextBoxFor(m => m.EmpId, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label for="TraineeName">Full Name of Trainee:</label>
+                            @Html.TextBoxFor(m => m.TraineeName, new { @class = "form-control" , @readonly = "true"})
+                        </div>
+                    </div>
+
+
+                                @Html.HiddenFor(m => m.Position, new { @class = "form-control" })
+
+                                @Html.HiddenFor(m => m.Trainor, new { @class = "form-control" })
+
+                                @Html.HiddenFor(m => m.DepartmentStore, new { @class = "form-control" })
+
+                                @Html.HiddenFor(m => m.EvaluationDate, new { @class = "form-control date-input" })
+
+                                @Html.HiddenFor(m => m.Venue, new { @class = "form-control" })
+                      
+                </div>
+            </div>
+        </div>
+
+
+        <div id="hideBody" style="display: none;">
+                    @foreach (var part in Model.EvaluationDetails.Select(m => m.Part).Distinct())
+                    {
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row">
+                                    @if (part == 1)
+                                    {
+                                        <h3 class="card-title">Part @part: Training Rating</h3>
+                                        <p class="mt-3">Rate the training session using the scale provided above.</p>
+
+
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">5 - Strongly Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">4 - Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">3 - Neutral</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">2 - Disagree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">1 - Strongly Disagree</span>
+                                        </div>
+                                    }
+
+
+                                    @if (part == 2)
+                                    {
+                                        <h3 class="card-title">Part @part: Training Rating</h3>
+                                        <p class="mt-3">Rate the training session using the scale provided above.</p>
+
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">5 - Strongly Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">4 - Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">3 - Neutral</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">2 - Disagree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">1 - Strongly Disagree</span>
+                                        </div>
+                                    }
+
+                                    @if (part == 3)
+                                    {
+                                        <h3 class="card-title">Part @part: Post-Training Rating</h3>
+                                        <p class="mt-3">Rate the training session using the scale provided above.</p>
+
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">5 - Strongly Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">4 - Agree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">3 - Neutral</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">2 - Disagree</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark">1 - Strongly Disagree</span>
+                                        </div>
+
+                                    }
+
+                                    @if (part == 4)
+                                    {
+                                        <h3 class="card-title">Part @part: Additional Comments</h3>
+                                        <p>Please provide additional comments to help us improve our training:</p>
+
+                                    }
+
+
+                            </div>
+                    </div>
+
+                            <div class="card-body">
+                                <div class="form-group">
+
+                                    @for (int i = 0; i < Model.EvaluationDetails.Count; i++)
+                                    {
+
+                                        var row = Model.EvaluationDetails[i];
+
+
+                                        if (part == row.Part ) 
+                                        { 
+                                                <div class="mb-3">
+                                                    <label>@row.EvalNumber. @row.Question</label>
+                                                    <br/> 
+                                                    <label class="translated-text" style="font-weight: normal;">
+                                                        (@row.Translate)
+                                                    </label>
+
+                                                 @Html.HiddenFor(m => m.EvaluationDetails[i].EId)
+
+                                                </div>
+
+                                                    if (row.RateType  == "Agree") 
+                                                    { 
+                                                    // Define the list of evaluation options
+                                                        var evaluationOptions = new List<SelectListItem>
+                                                            {
+                                                            new SelectListItem { Value = "", Text = "Select a Rating" }, // Blank option
+                                                            new SelectListItem { Value = "5", Text = "5 - Strongly Agree" },
+                                                            new SelectListItem { Value = "4", Text = "4 - Agree" },
+                                                            new SelectListItem { Value = "3", Text = "3 - Neutral" },
+                                                            new SelectListItem { Value = "2", Text = "2 - Disagree" },
+                                                            new SelectListItem { Value = "1", Text = "1 - Strongly Disagree" }
+                                                            };
+
+
+                                                            <!-- Only bind DropDownList if EvaluationDetails contains this index -->
+                                              
+                                                        @Html.DropDownListFor(m => m.EvaluationDetails[i].strAnswer, evaluationOptions, new { @class = "form-control", @required = "true" })
+
+
+
+
+
+                                                    }
+
+                                            if (row.RateType == "Yes or No")
+                                            {
+                                                // Define the list of evaluation options
+                                                var evaluationOptions = new List<SelectListItem>
+                                                {
+                                                new SelectListItem { Value = "", Text = "Select a Rating" }, // Blank option
+                                                new SelectListItem { Value = "5", Text = "5 - Strongly Agree" },
+                                                new SelectListItem { Value = "4", Text = "4 - Agree" },
+                                                new SelectListItem { Value = "3", Text = "3 - Neutral" },
+                                                new SelectListItem { Value = "2", Text = "2 - Disagree" },
+                                                new SelectListItem { Value = "1", Text = "1 - Strongly Disagree" }
+                                                };
+
+
+                                                <!-- Only bind DropDownList if EvaluationDetails contains this index -->
+                                                @Html.DropDownListFor(m => m.EvaluationDetails[i].strAnswer, evaluationOptions, new { @class = "form-control", @required = "true" })
+
+                                            
+                                            }
+
+                                            if (row.RateType == "Outstanding")
+                                            {
+
+ 
+
+
+                                                // Define the list of evaluation options
+                                                var evaluationOptions = new List<SelectListItem>
+                                                {
+                                                new SelectListItem { Value = "", Text = "Select a Rating" }, // Blank option
+                                                new SelectListItem { Value = "5", Text = "5 - Strongly Agree" },
+                                                new SelectListItem { Value = "4", Text = "4 - Agree" },
+                                                new SelectListItem { Value = "3", Text = "3 - Neutral" },
+                                                new SelectListItem { Value = "2", Text = "2 - Disagree" },
+                                                new SelectListItem { Value = "1", Text = "1 - Strongly Disagree" }
+                                                };
+
+
+                                                <div class="row"></div>
+                                                    <div class="col mb-3">
+                                                        <!-- Only bind DropDownList if EvaluationDetails contains this index -->
+                                                        @Html.DropDownListFor(m => m.EvaluationDetails[i].strAnswer, evaluationOptions, new { @class = "form-control", @required = "true" })
+
+                                                    </div>
+                                               
+                                                if (row.Comment.Any())
+                                                {
+                                                    <div class="col mb-3">
+
+                                                        <label>Comment:</label>
+                                                        @Html.TextBoxFor(m => m.EvaluationDetails[i].strComment, new { @class = "form-control"})
+                                                    </div>
+                                                }
+
+
+
+                                            }
+
+                                            if (row.RateType == "Sentence")
+                                            {
+                                            <div class="form-group">
+                                                <label>Comment:</label>
+                                                    @Html.TextAreaFor(m => m.EvaluationDetails[i].strComment, new { @class = "form-control" })
+                                            </div>
+
+
+                                            }
+
+
+
+                                        }
+
+                                     
+
+                                    }
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    
+                    
+                    }
+
+                    @Html.HiddenFor(m => m.Id)
+      
+        <!-- Submit Button -->
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+        </div>
+        </div>
+    }
+
+</div>
+
+
+
+@*error*@
+<div class="modal modal-blur fade" id="error-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="error-title" class="modal-title">@TempData["Error Title"]</div>
+                <div id="error-message">@TempData["Error Message"]</div>
+            </div>
+            <div class="modal-footer">
+                <button id="error-ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*success*@
+<div class="modal modal-blur fade" id="success-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="success-title" class="modal-title">@TempData["Success Title"]</div>
+                <div id="success-message">@TempData["Success Message"]</div>
+            </div>
+            <div class="modal-footer">
+                <button id="success-ok" type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*NO RESULT MODAL*@
+<div class="modal fade" id="noResultModal" tabindex="-1" aria-labelledby="noResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noResultModalLabel">No Results Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                No details were found for the selected employee. Please try again with a different selection.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Tabler JS -->
+
+<script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/list.js/dist/list.js"></script>
+<script src="~/lib/litepicker/dist/litepicker.js"></script>
+<script src="~/lib/tom-select/dist/js/tom-select.base.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+
+<script>
+    const ratingInput = document.getElementById('Rating1');
+    const errorMessage = document.getElementById('error-message');
+
+    ratingInput.addEventListener('input', function () {
+        // Convert value to a number for comparison
+        const value = Number(this.value);
+
+        // Check if the value is within the allowed range
+        if (value < 1 || value > 5) {
+            errorMessage.style.display = 'block'; // Show error message
+        } else {
+            errorMessage.style.display = 'none'; // Hide error message
+        }
+
+        // Block numbers outside the range
+        if (value < 1) {
+            this.value = 1; // Set to minimum
+        } else if (value > 5) {
+            this.value = 5; // Set to maximum
+        }
+    });
+
+    // Prevent input of invalid characters
+    ratingInput.addEventListener('keypress', function (event) {
+        const char = String.fromCharCode(event.which);
+        // Allow numbers only (1-5)
+        if (!/^[1-5]$/.test(char) && event.which !== 8) {
+            event.preventDefault(); // Block input if it’s not a valid number
+        }
+    });
+
+</script>
+<script>
+
+
+
+    $(".date-input").each(function () {
+        var today = new Date(); // Get today's date
+        new Litepicker({
+            element: this,
+            buttonText: {
+                previousMonth: `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>`,
+                nextMonth: `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>`,
+            },
+
+            firstDay: 0,
+
+        });
+    })
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#EmpId').on('change', function () {
+            var empId = $(this).val();
+            var id = $('#Id').val(); // Get the hidden Id value
+
+            if (empId) {
+                $.ajax({
+                    url: '@Url.Action("GetAllDetails", "Question")', // Update the action and controller name
+                    type: 'GET',
+                    data: { EmpId: empId, Id: id },
+                    success: function (response) {
+                        if (response && response.success) {
+                            var data = response.data;
+                            // Show the evaluation form
+                            $('#hideBody').show();
+                            // Populate fields with retrieved data
+                            $('#TraineeName').val(data[0]?.FullName || '');
+                            $('#DepartmentStore').val(data[0]?.Department || '');
+                            $('#Position').val(data[0]?.Position || '');
+                            $('#Trainor').val(data[0]?.Trainor || '');
+                            $('#EvaluationDate').val(new Date().toISOString().split('T')[0]);
+                            $('#Venue').val(data[0]?.Location || '');
+
+                        } else {
+                            $('#noResultModal').modal('show');
+                            $('#TraineeName').val('');
+                            $('#DepartmentStore').val('');
+                            $('#Position').val('');
+                            $('#Trainor').val('');
+                            $('#Venue').val('');
+                           
+                        }
+                    },
+                    error: function () {
+                        alert('Error fetching data');
+
+                        $('#TraineeName').val('');
+                        $('#DepartmentStore').val('');
+                        $('#Position').val('');
+                        $('#Trainor').val('');
+                        $('#Venue').val('');
+                    }
+                });
+            } else {
+             
+                $('#TraineeName').val('');
+                $('#DepartmentStore').val('');
+                $('#Position').val('');
+                $('#Trainor').val('');
+                $('#Venue').val('');
+            }
+        });
+    });
+
+   
+</script>

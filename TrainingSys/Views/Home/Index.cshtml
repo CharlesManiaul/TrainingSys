@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+@model ScheduleMaster
+
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-2">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    WELCOME @User.Identity.Name
+                </div>
+                <h2 class="page-title">
+                    TRAINING SYSTEM
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-body">
+    <div class="container-fluid ">
+
+        
+        
+            <div class="row g-2 align-items-center">
+
+            <div class="col-6 col-sm-6 col-md-6 col-xl px-3 py-3">
+                <a href="@Url.Action("Index", "Group")" class="btn btn-warning btn-lg w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-certificate"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" /><path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" /><path d="M6 9l12 0" /><path d="M6 12l3 0" /><path d="M6 15l2 0" /></svg>
+                    Batch
+                </a>
+            </div>
+
+            <div class="col-6 col-sm-6 col-md-6 col-xl px-3 py-3">
+                <a href="@Url.Action("Index", "Training")" class="btn btn-info btn-lg w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-school"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" /><path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" /></svg>
+                    Training
+                </a>
+            </div>
+
+            <div class="col-6 col-sm-6 col-md-6 col-xl px-3 py-3">
+                <a href="@Url.Action("Index", "Question")" class="btn btn-success btn-lg w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-list"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M9 12l.01 0" /><path d="M13 12l2 0" /><path d="M9 16l.01 0" /><path d="M13 16l2 0" /></svg>
+                    Examination
+                </a>
+            </div>
+
+
+
+          
+
+
+        </div>
+      
+
+        <div class="page-title mb-3"> RECENT GIVEN TRAININGS</div>
+
+        <div class="card">
+
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
+
+                        <thead class="table-thead">
+                          
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Employee Id</th>
+                                    <th>Employee Name</th>
+                                    <th>Scheduled Date</th>
+                                    <th>Trainor</th>
+                                    <th>Location</th>
+                                    <th>Created by</th>
+                                    <th>Created Date</th>
+
+                                </tr>
+                   
+
+                           
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @if (!Model.trainHead.Any())
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">No data available</td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                 @foreach (var row in Model.trainHead)
+                            {
+                                <tr>
+                                    <td data-label="Project Name" class="text-nowrap">@row.ProjectName</td>
+                                    <td data-label="Employee ID" class="text-nowrap">@row.EmpId</td>
+                                    <td data-label="Employee Name" class="text-nowrap">@row.fullName</td>
+                                    <td data-label="Scheduled Date" class="text-nowrap">@row.SchedDate</td>
+                                    <td data-label="Trainor" class="text-nowrap">@row.Trainor</td>
+                                    <td data-label="Location" class="text-nowrap">@row.Location</td>
+                                    <td data-label="Created by" class="text-nowrap">@row.crtdBy</td>
+                                    <td data-label="Created Date" class="text-nowrap">@row.crtdDate</td>
+
+                                </tr>
+                            }
+
+                            
+                            }
+                           
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+
+        <script>
+  
+
+
+
+        </script>
+}

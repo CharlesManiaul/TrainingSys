@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Profile Exam Detail";
+}
+
+@model Profile
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img class="avatar avatar-xl rounded" style="width: 150px; height: 150px; background-image: url(/Images/pfp.jpg);"></img>
+            </div>
+            <div class="col">
+                <h1 class="fw-bold">NAME: @Model.master.full_name</h1>
+                <div class="my-2">
+                    EMPLOYEE ID: @Model.master.employee_id
+                </div>
+                <div class="list-inline list-inline-dots text-secondary">
+                    <div class="list-inline-item">
+                        DEPARTMENT: @Model.master.department
+                    </div>
+                    <div class="list-inline-item">
+                        POSITION: @Model.master.position_title
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Body -->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+
+                @if (@Model.pfp.IsWritten == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table text-muted table-mobile-sm" id="datatable">
+
+                            <thead class="table-thead">
+                                <tr>
+                                    <th><button class="table-sort" data-sort="sort-Tries">Exam Tries</button></th>
+                                    <th><button class="table-sort" data-sort="sort-Title">Title</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ItemNo">Item Number</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceA">Choice A</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceB">Choice B</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceC">Choice C</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceD">Choice D</button></th>
+                                    <th><button class="table-sort" data-sort="sort-CorrectAns">Correct Answer</button></th>
+                                    <th><button class="table-sort" data-sort="sort-UserAns">User Answer</button></th>
+                                    <th>Response</th>
+
+
+                                </tr>
+                            </thead>
+
+                            <tbody class="table-tbody">
+                                @foreach (var group in Model.UserExam.GroupBy(x => x.ExamCounter))
+                                {
+                                    var examCounterRowspan = group.Count();
+
+                                    foreach (var row in group.Select((item, index) => new { item, index }))
+                                    {
+                                        <tr>
+                                            @if (row.index == 0) // First row in the group
+                                            {
+                                                <td data-label="Exam Tries" class="text-nowrap sort-Tries align-middle" rowspan="@examCounterRowspan">
+                                                    <a style="text-decoration: none; color: inherit;">@row.item.ExamCounter</a>
+                                                </td>
+                                            }
+
+                                        <td data-label="Title" class="text-nowrap sort-Title">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Title</a>
+                                        </td>
+
+                                        <td data-label="Item Number" class="text-nowrap sort-ItemNo">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.ItemNo</a>
+                                        </td>
+
+                                        <td data-label="Choice A" class="text-nowrap sort-ChoiceA">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceA</a>
+                                        </td>
+                                        <td data-label="Choice B" class="text-nowrap sort-ChoiceB">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceB</a>
+                                        </td>
+
+                                        <td data-label="Choice C" class="text-nowrap sort-ChoiceC">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceC</a>
+                                        </td>
+
+                                        <td data-label="Choice D" class="text-nowrap sort-ChoiceD">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceD</a>
+                                        </td>
+
+                                        <td data-label="Correct Answer" class="text-nowrap sort-CorrectAns">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Answer</a>
+                                        </td>
+                                        <td data-label="User Answer" class="text-nowrap sort-UserAns"
+                                                style="background-color:@(row.item.UserAnswer == row.item.Answer ? "#d4edda" : "#f8d7da");">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.UserAnswer</a>
+                                        </td>
+
+                                        @{
+                                            string badgeClass = "bg-secondary-lt";
+                                                switch (row.item.Response)
+                                            {
+                                                case "Correct":
+                                                    badgeClass = "bg-success-lt";
+                                                    break;
+                                                case "Wrong":
+                                                    badgeClass = "bg-danger-lt";
+                                                    break;
+
+
+                                            }
+                                        }
+                                        <td>
+                                                <span class="badge @badgeClass me-1">@row.item.Response</span>
+                                        </td>
+
+                                    </tr>
+                                }
+                                }
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+
+
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table text-muted table-mobile-sm" id="datatable">
+
+                            <thead class="table-thead">
+                                <tr>
+                                       <th>Exam Tries</th>
+                                <th><button class="table-sort" data-sort="sort-Title">Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Question">Question</button></th>
+                                <th><button class="table-sort" data-sort="sort-ItemNo">Item Number</button></th>
+                                <th><button class="table-sort" data-sort="sort-Grade">Grade</button></th>
+                                <th>Response</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody class="table-tbody">
+                                @foreach (var group in Model.UserExam.GroupBy(x => x.ExamCounter))
+                                {
+                                    var examCounterRowspan = group.Count();
+
+                                    foreach (var row in group.Select((item, index) => new { item, index }))
+                                    {
+                                        <tr>
+                                            @if (row.index == 0) // First row in the group
+                                            {
+                                                <td data-label="Exam Tries" class="text-nowrap sort-Tries align-middle" rowspan="@examCounterRowspan">
+                                                    <a style="text-decoration: none; color: inherit;">@row.item.ExamCounter</a>
+                                                </td>
+                                            }
+
+                                            <td data-label="Title" class="text-nowrap sort-Title">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Title</a>
+                                            </td>
+                                            <td data-label="Item Number" class="text-nowrap sort-Question">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Question</a>
+                                            </td>
+
+                                            <td data-label="Item Number" class="text-nowrap sort-ItemNo">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.ItemNo</a>
+                                            </td>
+
+                                            <td data-label="Grade" class="text-nowrap sort-Grade">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Grade</a>
+                                            </td>
+
+                                            <td data-label="Response" class="text-nowrap">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.UserAnswer</a>
+                                            </td>
+
+
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+
+
+
+                }
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>

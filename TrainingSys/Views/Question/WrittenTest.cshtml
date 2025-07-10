@@ -1,0 +1,262 @@
+﻿@{
+    ViewData["Title"] = "Written Test";
+    Layout = null;
+}
+
+@model Exam
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Test</title>
+
+    <!-- Tabler CSS -->
+    <link rel="stylesheet" href="~/css/tabler.min.css" />
+    <link rel="stylesheet" href="~/css/tabler-vendors.min.css" />
+    <link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css?1684106062" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS (optional) -->
+    <style>
+        .page-header {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+    </style>
+</head>
+
+
+<!-- Page Header -->
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Test Examination
+                    <h2 class="page-title">
+                        Examination Test
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Body -->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+            <form asp-action="SubmitAnswers" method="post">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-12 col-md-4 mb-3">
+                            <label>Employee ID: </label>
+                            @Html.TextBoxFor(m => m.EmpId, new { @class = "form-control", id = "EmpId", @required = "true" })
+
+                            @Html.HiddenFor(m => m.Id, new { @class = "form-control", id = "Id", @required = "true" })
+
+                            @Html.HiddenFor(m => m.TEId, new { @class = "form-control", id = "TEId", @required = "true" })
+
+                            @Html.HiddenFor(m => m.PassingScore)
+                        </div>
+
+                        <div class="col-12 col-md-8 mb-3">
+                            <label>Employee Name: </label>
+                            @Html.TextBoxFor(m => m.fullName, new { @class = "form-control", @id = "fullName", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hideBody" style="display: none;">
+                    <div class="card-body">
+                        <label class="col fw-bold mb-2">QUESTIONS</label>
+                        <table class="table text-muted table-responsive">
+                            <tbody>
+                                @{
+                                    string currentTitle = "";
+                                    int numberOfQuestionColumns = 3; // Adjust based on actual column count
+
+                                    // Use a HashSet to keep track of displayed question IDs to avoid duplication
+                                    var displayedQuestionIds = new HashSet<int>();
+                                }
+
+                                @foreach (var row in Model.TrainingDetails)
+                                {
+                                    if (currentTitle != row.Title)
+                                    {
+                                        <tr>
+                                            <td colspan="@numberOfQuestionColumns" class="py-1 bg-primary-lt fw-bold ps-3">@row.Title</td>
+                                        </tr>
+                                        currentTitle = row.Title;
+                                    }
+
+                                    var relatedQuestions = Model.examDetails.Where(wq => wq.Id == row.Id).ToList();
+                                    Random random = new Random();
+                                    var shuffledQuestions = relatedQuestions.OrderBy(q => random.Next()).ToList();
+
+                                    foreach (var question in shuffledQuestions)
+                                    {
+                                        // Skip displaying the question if it has already been shown
+                                        if (displayedQuestionIds.Contains(question.ItemNo))
+                                            continue;
+
+                                        <tr>
+                                            <input type="Hidden" asp-for="@question.ExamId" />
+                       
+                                            <td class="py-1">@question.Question</td>
+                                        </tr>
+                                        @if (question.SubId == 1)
+                                        {
+                                            // Enumeration Answer
+                                            <tr>
+                                                <td colspan="2">
+                                                    <textarea name="answers_@question.ItemNo" rows="3" class="form-control" placeholder="Enter your answer here"></textarea>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        @if (question.SubId == 2) 
+                                            {
+                                                <tr>
+                                                    <td colspan="2">
+
+                                                        <div class="form-selectgroup">
+                                                        @foreach (var choice in new[] { question.choiceA, question.choiceB, question.choiceC, question.choiceD }.Where(c => !string.IsNullOrWhiteSpace(c)))
+                                                        {
+                                                            <label class="form-selectgroup-item">
+                                                                <input type="radio" name="answers_@question.ItemNo" value="@choice" id="choice_@question.ItemNo" class="form-selectgroup-input">
+                                                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                    <div class="me-3">
+                                                                        <span class="form-selectgroup-check"></span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="form-selectgroup-label">@choice</span>
+                                                                    </div>
+                                                                </div>
+                                                            </label>
+                                                        }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        @if (question.SubId == 3)
+                                        {
+                                        // True or False
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="form-check">
+                                                        <input type="radio" id="true_@question.ItemNo" name="answers_@question.ItemNo" value="True" class="form-check-input">
+                                                        <label for="true_@question.ItemNo" class="form-check-label">True</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="radio" id="false_@question.ItemNo" name="answers_@question.ItemNo" value="False" class="form-check-input">
+                                                        <label for="false_@question.ItemNo" class="form-check-label">False</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        @if (question.SubId == 4)
+                                        {
+                                            // Enumeration Answer
+                                            <tr>
+                                                <td colspan="2">
+                                                    <textarea name="answers_@question.ItemNo" rows="3" class="form-control" placeholder="Enter your answer here"></textarea>
+                                                </td>
+                                            </tr>
+                                        }
+
+
+                                // Add the question ID to the set of displayed questions
+                                        displayedQuestionIds.Add(question.ItemNo);
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-primary">Submit Answers</button>
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.TEId)
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*NO RESULT MODAL*@
+<div class="modal fade" id="noResultModal" tabindex="-1" role="dialog" aria-labelledby="noResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noResultModalLabel">No Result Found</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                No matching record was found for the selected Employee ID.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/list.js/dist/list.js"></script>
+<script src="~/lib/litepicker/dist/litepicker.js"></script>
+<script src="~/lib/tom-select/dist/js/tom-select.base.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#EmpId').on('change', function () {
+            var empId = $(this).val();
+            var id = $('#Id').val(); // Get the hidden Id value
+            var teid = $('#TEId').val(); // Get the hidden Id value
+            if (empId) {
+                $.ajax({
+                    url: '@Url.Action("GetName", "Question")',
+                    type: 'GET',
+                    data: { EmpId: empId, Id: id, TEId : teid },
+                    success: function (data) {
+                        if (data && data.fullName) {
+                      
+                            $('#fullName').val(data.fullName);      
+                            $('#hideBody').show();
+                        } else {
+                            $('#fullName').val(''); // Clear if no name found
+                            $('#noResultModal').modal('show'); // Show modal
+                        }
+                    },
+                    error: function () {
+                        alert('Error fetching data');
+                    }
+                });
+            } else {
+                $('#fullName').val(''); // Clear if no empId
+            }
+        });
+    });
+</script>

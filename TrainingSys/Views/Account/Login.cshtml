@@ -1,0 +1,83 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    Layout = null;
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LOGIN</title>
+    <link rel="stylesheet" href="~/css/tabler.css" />
+    <link rel="stylesheet" href="~/css/tabler-vendors.css" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+
+        :root {
+            --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+    </style>
+
+
+
+
+</head>
+
+<div class="page page-center">
+    <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+            <h1>Training System</h1>
+        </div>
+        <div class="card card-md">
+            <div class="card-body">
+                <h2 class="h2 text-center mb-4">Login to your CISS account</h2>
+
+                @if (TempData["siteWarning"] != null)
+                {
+                    <div class="alert alert-warning" role="alert" id="warningAlert">
+                        @TempData["siteWarning"]
+                    </div>
+                }
+
+                <form action="/Account/Login" method="post" autocomplete="off">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control @TempData["invalid"]" placeholder="Username" autocomplete="off" name="username" required>
+                        <small class="text-danger">@TempData["error"]</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">
+                            Password
+                        </label>
+                        <div class="input-group input-group-flat">
+                            <input type="password" class="form-control @TempData["invalid"]" placeholder="Password" autocomplete="off" name="password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    setTimeout(function () {
+        var alert = document.getElementById('warningAlert');
+        if (alert) {
+            alert.style.display = 'none';
+        }
+    }, 3000); // Hide after 5 seconds
+</script>

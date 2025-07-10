@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Profile";
+}
+
+@model Profile
+<!-- Page header -->
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <h2 class="page-title">
+                    Users
+                </h2>
+                <div class="text-secondary mt-1">
+                    <span id="profileCount"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid ">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable">
+
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Image</th>
+                                <th><button class="table-sort" data-sort="sort-empId">Employee Id</button></th>
+                                <th><button class="table-sort" data-sort="sort-name">Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-position">Position Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-department">Department</button></th>
+                   
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+
+
+                            @foreach (var row in Model.scheduleMaster)
+                            {
+                                <tr>
+                                    <td >
+                                        <span class="avatar avatar-xl mb-3 rounded" style="background-image: url('/Images/pfp.jpg'); background-size: cover; background-position: center;"></span>
+                                    </td>
+                                    <td data-label="Employee Id" class="text-nowrap sort-empId">
+                                        <a href="Profile/Details/@row.employee_id" style="text-decoration: none; color: inherit;">@row.employee_id</a>
+                                    </td>
+
+                                    <td data-label="Name" class="text-nowrap sort-name">
+                                        <a href="Profile/Details/@row.employee_id" style="text-decoration: none; color: inherit;">@row.full_name</a>
+                                    </td>
+
+                                    <td data-label="Position Title" class=" text-nowrap sort-position">
+                                        <a href="Profile/Details/@row.employee_id" style="text-decoration: none; color: inherit;">@row.position_title</a>
+                                    </td>
+
+                                    <td data-label="Department" class=" text-nowrap sort-department">
+                                        <a href="Profile/Details/@row.employee_id" style="text-decoration: none; color: inherit;">@row.department</a>
+                                    </td>
+                                 
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

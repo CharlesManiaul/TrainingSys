@@ -1,0 +1,392 @@
+﻿@{
+    ViewData["Title"] = "Scheduling";
+}
+@model ScheduleMaster
+
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Scheduling - Training System
+                    <h2 class="page-title">
+                        Schedule
+                    </h2>
+                </div>
+            </div>
+
+
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#trainingModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+
+                    Schedule Training
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm">
+                        <thead class="table-thead">
+                            <tr>
+                                <th>Status</th>
+                                <th><button class="table-sort" data-sort="sort-Group">Group Name</button></th>
+                                <th><button class="table-sort" data-sort="sort-Training">Training</button></th>
+                                <th><button class="table-sort" data-sort="sort-SchedDate">Scheduled Date</button></th>
+                                <th><button class="table-sort" data-sort="sort-Location">Location</button></th>
+                                <th><button class="table-sort" data-sort="sort-Trainor">Trainor</button></th>
+                                <th><button class="table-sort" data-sort="sort-EndDate">End Date</button></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="table-tbody">
+                            @foreach (var row in Model.trainHead)
+                            {
+
+                                string badgeClass = "bg-secondary-lt";
+                                switch (row.Status)
+                                {
+                                    case "Scheduled":
+                                        badgeClass = "bg-warning-lt";
+                                        break;
+                                    case "Finished":
+                                        badgeClass = "bg-success-lt";
+                                        break;
+                                    case "Cancelled":
+                                        badgeClass = "bg-danger-lt";
+                                        break;
+                                    case "Ongoing":
+                                        badgeClass = "bg-teal-lt";
+                                        break;
+
+                                    case "Rescheduled":
+                                        badgeClass = "bg-indigo-lt";
+                                        break;
+                                }
+
+
+
+
+
+                                <tr>
+
+
+
+
+
+                                    <td>
+                                        <span class="badge @badgeClass me-1">@row.Status</span>
+                                    </td>
+
+                                    <td data-label="Group Name" class="text-nowrap sort-Group">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.ProjectName</a>
+                                    </td>
+
+                                    <td data-label="Training" class="text-nowrap sort-Training">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.title</a>
+                                    </td>
+
+                                    <td data-label="Scheduled Date" class="text-nowrap sort-SchedDate">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.SchedDate?.ToString("yyyy/MM/dd HH:mm:ss")</a>
+                                    </td>
+
+                                    <td data-label="Location" class="text-nowrap sort-Location">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.Location</a>
+                                    </td>
+
+                                    <td data-label="Trainor" class="text-nowrap sort-Trainor">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.Trainor</a>
+                                    </td>
+
+                                    <td data-label="End Date" class="text-nowrap sort-EndDate">
+                                        <a href="/Schedule/Details/@row.TTId" style="text-decoration: none; color: inherit;">@row.EndDate</a>
+                                    </td>
+
+
+
+
+                                    <td>
+                                        @if (row.Status == "Ongoing" || row.Status == "Scheduled")
+                                        {
+                                            <div class="input-group">
+                                                <button type="button" class="btn btn-icon btn-outline-success btn_start" data-bs-toggle="modal" data-bs-target="#ModalStart" data-startid="@row.TTId">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-player-play">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M7 4v16l13 -8z" />
+                                                    </svg>
+                                                </button>
+
+                                                <button type="button" class="btn btn-icon btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-id="@row.TTId">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M4 7l16 0" />
+                                                        <path d="M10 11l0 6" />
+                                                        <path d="M14 11l0 6" />
+                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        }
+                                    </td>
+
+
+
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@*Modal Delete Training*@
+
+@using (Html.BeginForm("DeleteSchedule", "Schedule", FormMethod.Post))
+{
+
+    <div class="modal modal-blur fade" id="ModalDelete" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                    <h3>Delete Training?</h3>
+                    @Html.TextBoxFor(m => m.TTId, new { @class = "TTId", @id = "TTId", @name = "TTId" })
+                    <div class="text-muted">Do you really want to delete this Training? This process cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnDeleteAsset btn btn-danger w-100">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@*Modal Start Training*@
+
+@using (Html.BeginForm("StartSchedule", "Schedule", FormMethod.Post))
+{
+    <div class="modal modal-blur fade" id="ModalStart" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-primary"></div> @* Changed from bg-danger to bg-primary *@
+                <div class="modal-body text-center py-4">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/play -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-primary icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 4v16l13 -8z" /></svg>
+                    @* Changed icon to play symbol *@
+                    <h3>Start Training?</h3> @* Changed the message *@
+                    @Html.TextBoxFor(m => m.TTId, new { @class = "sTTId", @id = "sTTId", @name = "sTTId" })
+                    <div class="text-muted">Are you sure you want to start this training session?</div> @* Changed the message *@
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnStartTraining btn btn-primary w-100">
+                                    @* Changed button styling *@
+                                    Start
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+@*Modal Save Schedule*@
+@using (Html.BeginForm("SaveSchedule", "Schedule", FormMethod.Post, new { id = "form-Save-Schedule" }))
+{
+    <!-- Modal -->
+    <div class="modal fade" id="trainingModal" tabindex="-1" aria-labelledby="trainingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trainingModalLabel">Training Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Grouped Textboxes -->
+                            <div class="col-lg-12 mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Training</label>
+                                    <select class="form-select tom-select" asp-for="TrainHead.TId" required id="trainHeadTId">
+                                        <option selected disabled></option>
+                                        @foreach (var item in Model.training)
+                                        {
+                                            <option value="@item.TId" data-id="@item.Id">
+                                                @item.Title
+                                            </option>
+                                        }
+                                    </select>
+
+
+
+                                    @Html.HiddenFor(m => m.TrainHead.Id, new { @id = "trainHeadId" })
+
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select Schedule Date</label>
+                                    <input type="text" id="scheduleDate" class="form-control date-input" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select Schedule Time</label>
+                                    <input type="time" id="scheduleTime" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Combined Date and Time</label>
+                                    @Html.TextBoxFor(m => m.TrainHead.SchedDate, new { @class = "form-control", @required = "required", @id = "combinedDateTime", @readonly = "true" })
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    @Html.TextBoxFor(m => m.TrainHead.Location, new { @class = "form-control", @required = "required" })
+                                </div>
+                                @* tomselect *@
+                                <div class="mb-3">
+                                    <label class="form-label">Trainor</label>
+                                    <select class="form-select tom-select" asp-for="TrainHead.Trainor" required>
+                                        <option selected disabled></option>
+                                        @foreach (var item in Model.profiles)
+                                        {
+                                            <option value="@item.full_name">@item.full_name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.TrainHead.TTId)
+}
+
+@section Scripts {
+
+    <script>
+        // delete script
+        $(".btn_delete").click(function () {
+            const id = $(this).data("id")
+            $("#TTId").val(id)
+        })
+
+        // delete script
+        $(".btn_start").click(function () {
+            const id = $(this).data("startid")
+            $("#sTTId").val(id)
+        })
+
+        $(document).ready(function () {
+            $('#trainHeadTId').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var dataId = selectedOption.data('id');
+                $('#trainHeadId').val(dataId); // Set the input field value with data-id
+            });
+        });
+
+        $(document).ready(function () {
+            function updateCombinedDateTime() {
+                var date = $('#scheduleDate').val();
+                var time = $('#scheduleTime').val();
+                if (date && time) {
+                    $('#combinedDateTime').val(date + ' T ' + time + ':00'); // Format as YYYY-MM-DDTHH:MM:SS
+                }
+            }
+
+            $('#scheduleDate, #scheduleTime').on('change', updateCombinedDateTime);
+        });
+
+
+
+    </script>
+
+
+
+
+}

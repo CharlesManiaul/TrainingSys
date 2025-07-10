@@ -1,0 +1,678 @@
+﻿@{
+    ViewData["Title"] = "Scheduling Details";
+}
+
+@model ScheduleMaster
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Scheduling - Training System
+                    <h2 class="page-title">
+                        Scheduling Details
+                    </h2>
+                </div>
+            </div>
+            <div class="col-12 col-md-auto ms-auto d-print-none">
+                <div class="d-flex flex-wrap justify-content-end gap-2">
+                    @if (Model.TrainHead.Status == "Ongoing")
+                    {
+                        <!-- Finish Button -->
+                        <button type="button" class="btn btn-success" id="btnFinish" data-bs-toggle="modal" data-bs-target="#ModalFinish">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M5 12l5 5l10 -10" />
+                            </svg>
+                            Finish
+                        </button>
+                    }
+                    @if (Model.TrainHead.Status != "Finished")
+                    {
+                        <!-- Reschedule Button -->
+                        <button class="btn btn-lime" id="btnResched" data-bs-toggle="modal" data-bs-target="#ModalResched">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-stats">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+                                <path d="M18 14v4h4" />
+                                <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                <path d="M15 3v4" />
+                                <path d="M7 3v4" />
+                                <path d="M3 11h16" />
+                            </svg>
+                            Reschedule
+                        </button>
+                    }
+
+                    <!-- Show Test Button -->
+                    <button type="button" class="btn btn-purple" id="btnShowTest">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-pencil"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M10 18l5 -5a1.414 1.414 0 0 0 -2 -2l-5 5v2h2z" /></svg>
+                        Show Test
+                    </button>
+
+
+                    <button type="button" class="btn btn-primary btn_generate"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ModalQR"
+                            onclick="generateQRCode(this)">
+                        GENERATE QR
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@using (Html.BeginForm((Model.TrainHead.Status != "Ongoing") ? "UpdateSchedule" : "FinishSched", "Schedule", FormMethod.Post, new { id = "form-Update-Schedule" }))
+{
+
+    <div class="page-body">
+        <div class="container-fluid ">
+            <div class="card">
+
+                @if (Model.TrainHead.Status != "Finished" && Model.TrainHead.Status != "Ongoing" && Model.TrainHead.Status != "Cancelled")
+                {
+                    <div class="card-header">
+                        <button class="btn btn-warning ms-auto" id="btnUpdate" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                            </svg>
+                            Update
+                        </button>
+                    </div>
+                }
+
+
+                <div class="card-body">
+                    <!-- Grouped Textboxes -->
+                    <div class="row">
+                        <!-- Row 1 -->
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Training</label>
+                            <select class="form-select tom-select" asp-for="TrainHead.TId" required>
+                                <option selected disabled></option>
+                                @foreach (var item in Model.training)
+                                {
+                                    <option value="@item.TId" data-tid="@item" data-status="@item.IsWritten">@item.Title</option>
+                                }
+                            </select>
+                        </div>
+
+                        @Html.HiddenFor(m => m.TrainHead.IsWritten, new { @class = "IsWritten form-control", @required = "required", @id = "tIsWritten" })
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Select Schedule Date</label>
+                            <input type="text" id="scheduleDate" class="form-control date-input" readonly disabled>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Select Schedule Time</label>
+                            <input type="time" id="scheduleTime" class="form-control" readonly disabled>
+                        </div>
+
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Combined Date and Time</label>
+                            @Html.TextBoxFor(m => m.TrainHead.SchedDate, new { @class = "form-control", @required = "required", @id = "combinedDateTime", @readonly = "True" })
+                        </div>
+
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Location</label>
+                            @Html.TextBoxFor(m => m.TrainHead.Location, new { @class = "form-control", @required = "required" })
+                        </div>
+
+
+
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Trainor</label>
+                            <select class="form-select tom-select" asp-for="TrainHead.Trainor" required>
+                                <option selected disabled></option>
+                                @foreach (var item in Model.profiles)
+                                {
+                                    <option value="@item.full_name">@item.full_name</option>
+                                }
+                            </select>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="card">
+
+
+                @if (Model.TrainHead.Status != "Finished" && Model.TrainHead.Status != "Ongoing" && Model.TrainHead.Status != "Cancelled")
+                {
+                    <div class="card-header">
+                        <!-- Choose Attendee Button -->
+                        <button type="button" class="btn btn-info  ms-auto" id="btnAttendeeAdd" data-bs-toggle="modal" data-bs-target="#ModalAddAttendee">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                                <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                                <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+                            </svg>
+                            Choose Attendee
+                        </button>
+                    </div>
+                }
+
+                <div class="col-lg-12 mb-3" id="details">
+                    <div class="card-body">
+                        <label class="form-label">Attendees</label>
+                        <div class="table-responsive">
+
+                            <table id="selectedItemsTable" class="table">
+                                <thead>
+                                    <tr>
+                                        @if (Model.TrainHead.Status != "Finished" || Model.TrainHead.Status != "Ongoing")
+                                        {
+                                            <th>*</th>
+                                        }
+                                        <th>Employee ID</th>
+                                        <th>Full Name</th>
+                                        <th>Position</th>
+                                        <th>Department</th>
+                                        @if (Model.TrainHead.Status != "Finished" && Model.TrainHead.Status != "Ongoing")
+                                        {
+                                            <th>Action</th>
+                                        }
+
+                                    </tr>
+                                </thead>
+                                <tbody class="table-tbody">
+                                    @for (int i = 0; i < Model.AttendeeDetails.Count(); i++)
+                                    {
+                                        <tr>
+                                            @if (Model.TrainHead.Status != "Finished" && Model.TrainHead.Status != "Ongoing")
+                                            {
+                                                <td class="text-nowrap">
+                                                    <label class="form-check">
+
+                                                        <input type="checkbox" data-index="@i" id="checkbox-@i" class="form-check-input" name="AttendeeDetails[@i].IsFinished" checked />
+                                                    </label>
+                                                </td>
+                                            }
+
+                                            @Html.HiddenFor(m => m.AttendeeDetails[i].TTId)
+                                            @if (Model.TrainHead.Status == "Ongoing")
+                                            {
+                                                <td class="text-nowrap">
+                                                    <label class="form-check">
+
+                                                        <input type="checkbox" data-index="@i" id="checkbox-@i" class="form-check-input" asp-for="@Model.AttendeeDetails[i].IsFinished" checked />
+                                                    </label>
+                                                </td>
+                                            }
+                                            @if (Model.TrainHead.Status == "Finished")
+                                            {
+                                                <td class="text-nowrap">
+                                                    <label class="form-check">
+
+                                                        <input type="checkbox" data-index="@i" id="checkbox-@i" class="form-check-input" asp-for="@Model.AttendeeDetails[i].IsFinished" />
+                                                    </label>
+                                                </td>
+                                            }
+
+
+                                            <td><input type="hidden" name="AttendeeDetails[@i].EmpId" value="@Model.AttendeeDetails[i].EmpId" />@Model.AttendeeDetails[i].EmpId</td>
+                                            <td><input type="hidden" name="AttendeeDetails[@i].fullName" value="@Model.AttendeeDetails[i].fullName" />@Model.AttendeeDetails[i].fullName</td>
+                                            <td><input type="hidden" name="AttendeeDetails[@i].position" value="@Model.AttendeeDetails[i].position" />@Model.AttendeeDetails[i].position</td>
+                                            <td><input type="hidden" name="AttendeeDetails[@i].department" value="@Model.AttendeeDetails[i].department" />@Model.AttendeeDetails[i].department</td>
+
+                                            @if (Model.TrainHead.Status != "Finished" && Model.TrainHead.Status != "Ongoing")
+                                            {
+                                                <td><button class="remove-item-btn btn btn-danger btn-sm" data-taid="@Model.AttendeeDetails[i].TAId">Remove</button></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+    @Html.HiddenFor(m => m.TrainHead.TTId, new { @class = "TTId", @id = "TTId", @name = "TTId" })
+    @Html.HiddenFor(m => m.TrainHead.TId, new { @class = "TId", @id = "TId", @name = "TId" })
+    @Html.HiddenFor(m => m.TrainHead.ExamId, new { @class = "Id", @id = "Id", @name = "Id" })
+
+
+}
+
+
+<div class="modal modal-blur fade" id="ModalFinish" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-warning"></div>
+            <div class="modal-body text-center py-4">
+                <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-warning icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                <h3>Finalized Training?</h3>
+
+                <input type="hidden" id="AttendeeDetails" name="AttendeeDetails" />
+                @Html.HiddenFor(m => m.TrainHead.TTId)
+
+
+
+                <div class="text-muted">Do you really want to finalize this Training?</div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                No
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btnFinal btn btn-warning w-100">
+                                Yes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*Modal for Attendees*@
+<div class="modal modal-blur fade" id="ModalAddAttendee" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-primary"></div>
+            <div class="modal-body text-center py-4">
+                <h3>Attendee Details</h3>
+                <div class="input-group d-flex flex-column flex-md-row align-items-center">
+                    <div class="col mb-3">
+
+                        <div class="d-flex align-items-center">
+                            <label class="form-label mb-3 me-2">Attendee/s:</label>
+                            <div class="select-button-container col mb-3">
+                                <select id="attendeeSelect" class="form-select tom-select-subtitle2 fixed-width-select" asp-for="Attendee.EmpId" multiple>
+                                    <option selected disabled></option>
+                                    @foreach (var item in Model.scheduleMaster)
+                                    {
+                                        <option value="@item.employee_id"
+                                                data-subtitle="@item.employee_id"
+                                                data-subtitle2="@item.department"
+                                                data-post="@item.position_title"
+                                                data-fullname="@item.full_name"
+                                                data-tid="@item.TId">
+                                            @item.full_name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.TId)
+
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btnAddAttendee btn btn-success w-100">
+                                Add Attendee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@using (Html.BeginForm("Reschedule", "Schedule", FormMethod.Post, new { id = "form-Reschedule" }))
+{
+    <div class="modal modal-blur fade" id="ModalResched" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-status bg-primary"></div>
+                <div class="modal-body text-center py-4">
+                    <h3>Set Reschedule Date</h3>
+                    <div class="input-group d-flex flex-column flex-md-row align-items-center">
+                        <div class="col mb-3">
+
+                            <div class="col mb-3">
+                                <label class="form-label">Select Schedule Date</label>
+                                <input type="text" id="scheduleDate2" class="form-control date-input">
+                            </div>
+
+                            <div class="col mb-3">
+                                <label class="form-label">Select Schedule Time</label>
+                                <input type="time" id="scheduleTime2" class="form-control">
+                            </div>
+
+                            <div class="col mb-3">
+                                <label class="form-label">Scheduled Date and Time</label>
+                                @Html.TextBoxFor(m => m.TrainHead.SchedDate, new { @class = "form-control", @required = "required", @id = "combinedDateTime2", @readonly = "True" })
+                            </div>
+
+                            @Html.HiddenFor(m => m.TrainHead.TTId)
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btnAddReSched btn btn-success w-100">
+                                    Add Attendee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
+
+<!-- Modal for displaying QR code -->
+<div class="modal fade" id="ModalQR" tabindex="-1" aria-labelledby="ModalQRLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalQRLabel">QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex flex-column align-items-center justify-content-center text-center">
+                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid mb-2" />
+                <p id="qr-code-link"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+
+        function generateQRCode(button) {
+            // Get the data-id attribute from the button
+            const Id = $('#Id').val();
+            const Status = $('#tIsWritten').val();
+
+
+            // Ensure Id is available
+            if (!Id) {
+                console.error('Id is missing or invalid');
+                return;
+            }
+
+            // Convert Status value to boolean
+            const isWritten = (Status === "true" || Status === true || Status === "True");
+
+
+            // Construct the base URL
+            const baseUrl = window.location.origin;
+            let url;
+
+            if (isWritten) {
+                url = `${baseUrl}/Question/WrittenTest/${Id}`;
+            } else {
+                url = `${baseUrl}/Question/PracticalTest/${Id}`;
+            }
+
+            console.log(`Generated URL: ${url}`); // Debugging log
+
+            // Generate the QR code URL
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+
+            // Set the QR code image in the modal
+            document.getElementById('qr-code-image').src = qrCodeUrl;
+
+            // Set the text content of the paragraph to display the URL
+            const qrCodeLink = document.getElementById('qr-code-link');
+            qrCodeLink.textContent = url;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // delete script
+        $(".btnFinal").click(function () {
+            $("#form-Update-Schedule").submit()
+        })
+
+
+
+        $('#btnShowTest').click(function () {
+            const TTId = $('#TTId').val()
+            const TId = $('#TId').val()
+            location.href = `/Schedule/EmpTook/${TTId}/${TId}`
+
+        })
+
+
+
+        $(document).ready(function () {
+            // Function to reindex the attendee table after adding or removing a row
+            function reindexAttendees() {
+                $('#selectedItemsTable tbody tr').each(function (index) {
+                    $(this).find('input').each(function () {
+                        var name = $(this).attr('name');
+                        if (name) {
+                            // Update name attributes with the new index
+                            var newName = name.replace(/\[\d+\]/, '[' + index + ']');
+                            $(this).attr('name', newName);
+
+                            // Update data-index and ID attributes
+                            if ($(this).attr('data-index') !== undefined) {
+                                $(this).attr('data-index', index);
+                            }
+                            if ($(this).attr('id')) {
+                                $(this).attr('id', 'checkbox-' + index);
+                            }
+                        }
+                    });
+                    // Update the "Remove" button's data attribute
+                    $(this).find('.remove-item-btn').attr('data-index', index);
+                });
+            }
+
+            // Add Attendee
+            $('.btnAddAttendee').on('click', function () {
+                // Get the selected attendee options
+                var selectedOptions = $('#attendeeSelect option:selected');
+
+                // Get the table body where the attendees will be added
+                var $tbody = $('#selectedItemsTable tbody');
+
+                // Loop through selected options (in case multiple attendees are selected)
+                selectedOptions.each(function () {
+                    var $this = $(this);
+                    var attendeeId = $this.val();
+                    var fullName = $this.data('fullname');
+                    var position = $this.data('post');
+                    var department = $this.data('subtitle2');
+
+                    // Check if the attendee already exists in the table (avoid duplicates)
+                    if ($tbody.find(`input[value="${attendeeId}"]`).length > 0) {
+                        return; // Skip if the attendee is already in the list
+                    }
+
+                    // Calculate the correct row count based on current children
+                    var rowCount = $tbody.children().length;
+
+                    // Append the selected attendee details to the table using dynamic index
+                    var newRow = `
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" data-index="${rowCount}" id="checkbox-${rowCount}" class="form-check-input" name="AttendeeDetails[${rowCount}].IsAttended" checked />
+                                                            </td>
+                                                            <td><input type="hidden" name="AttendeeDetails[${rowCount}].EmpId" value="${attendeeId}" />${attendeeId}</td>
+                                                            <td><input type="hidden" name="AttendeeDetails[${rowCount}].fullName" value="${fullName}" />${fullName}</td>
+                                                            <td><input type="hidden" name="AttendeeDetails[${rowCount}].position" value="${position}" />${position}</td>
+                                                            <td><input type="hidden" name="AttendeeDetails[${rowCount}].department" value="${department}" />${department}</td>
+                                                            <td><button class="remove-item-btn btn btn-danger btn-sm" data-index="${rowCount}">Remove</button></td>
+                                                        </tr>
+                                                    `;
+                    $tbody.append(newRow);
+                });
+
+                // Reindex rows after adding
+                reindexAttendees();
+
+                // Make the table visible if attendees are added
+                if ($tbody.children().length > 0) {
+                    $('#details').show();
+                }
+
+                // Close the modal after adding attendees
+                var $modalElement = $('#ModalAddAttendee');
+                var modal = bootstrap.Modal.getInstance($modalElement[0]);
+                modal.hide();
+            });
+
+            // Remove Attendee
+            $(document).on('click', '.remove-item-btn', function () {
+                // Remove the attendee row
+                $(this).closest('tr').remove();
+
+                // Reindex remaining rows after deletion
+                reindexAttendees();
+
+                // Hide the table if no rows are left
+                if ($('#selectedItemsTable tbody').children().length === 0) {
+                    $('#details').hide();
+                }
+            });
+
+            // Clear previous selections when the modal opens (optional)
+            $('#ModalAddAttendee').on('shown.bs.modal', function () {
+                $('#attendeeSelect').prop('selectedIndex', -1); // Deselect any previously selected attendees
+            });
+        });
+
+
+
+
+
+        $(document).ready(function () {
+            // Set initial values for scheduleDate and scheduleTime from the model's SchedDate
+            var schedDateTime = '@(Model.TrainHead.SchedDate.HasValue ? Model.TrainHead.SchedDate.Value.ToString("yyyy-MM-ddTHH:mm") : "")';
+
+            if (schedDateTime) {
+                var datePart = schedDateTime.split('T')[0];  // Extract date (YYYY-MM-DD)
+                var timePart = schedDateTime.split('T')[1];  // Extract time (HH:MM)
+
+                $('#scheduleDate').val(datePart);
+                $('#scheduleTime').val(timePart);
+            }
+
+            // Function to update combined date and time value
+            function updateCombinedDateTime() {
+                var date = $('#scheduleDate').val();
+                var time = $('#scheduleTime').val();
+                if (date && time) {
+                    $('#combinedDateTime').val(date + 'T' + time + ':00'); // Format as YYYY-MM-DDTHH:MM:SS
+                }
+            }
+
+            // Trigger function when scheduleDate or scheduleTime changes
+            $('#scheduleDate, #scheduleTime').on('change', updateCombinedDateTime);
+
+            // Call the function initially to set the combined value on page load
+            updateCombinedDateTime();
+        });
+
+
+
+        $(document).ready(function () {
+            // Function to update the combined date and time field
+            function updateCombinedDateTime() {
+                var date = $('#scheduleDate2').val();
+                var time = $('#scheduleTime2').val();
+
+                if (date && time) {
+                    // Combine date and time in the desired format
+                    var combinedDateTime = date + ' ' + time;
+                    $('#combinedDateTime2').val(combinedDateTime);
+                } else {
+                    $('#combinedDateTime2').val(''); // Clear the field if date or time is missing
+                }
+            }
+
+            // Trigger the function on date or time change
+            $('#scheduleDate2, #scheduleTime2').on('change', updateCombinedDateTime);
+
+        });
+
+
+
+
+    </script>
+
+
+
+
+
+}

@@ -1,0 +1,239 @@
+﻿@model TrainGroup
+
+@{
+    ViewData["Title"] = "View Answer";
+}
+
+<div class="page-header d-print-none">
+    <div class="container-fluid">
+        <div class="row g-2 align-items-center">
+            <div class="col-6">
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                    Answer of - Group Training
+                    <h2 class="page-title">
+                        View Answer
+                    </h2>
+                </div>
+            </div>
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="card">
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3">
+
+                    <div class="d-flex text-center text-lg-start mb-3">
+                        <div class="text-muted">
+                            Show
+                            <div class="mx-2 d-inline-block w-25">
+                                <input id="entries" type="number" class="form-control" value="10" autocomplete="off">
+                            </div>
+                            entries
+                        </div>
+
+                    </div>
+
+                    <div class="input-icon mb-3 ms-auto">
+                        <input type="search" class="search form-control" placeholder="Search">
+                        <span class="input-icon-addon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </span>
+
+                    </div>
+                </div>
+
+                <hr class="m-0">
+
+
+                @if (@Model.pfp.IsWritten == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table text-muted table-mobile-sm" id="datatable">
+
+                            <thead class="table-thead">
+                                <tr>
+                                    <th><button class="table-sort" data-sort="sort-Tries">Exam Tries</button></th>
+                                    <th><button class="table-sort" data-sort="sort-Title">Title</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ItemNo">Item Number</button></th>
+                                    <th><button class="table-sort" data-sort="sort-Question">Question</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceA">Choice A</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceB">Choice B</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceC">Choice C</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ChoiceD">Choice D</button></th>
+                                    <th><button class="table-sort" data-sort="sort-CorrectAns">Correct Answer</button></th>
+                                    <th><button class="table-sort" data-sort="sort-UserAns">User Answer</button></th>
+                                    <th>Response</th>
+
+
+                                </tr>
+                            </thead>
+
+                            <tbody class="table-tbody">
+                                @foreach (var group in Model.UserExam.GroupBy(x => x.ExamCounter))
+                                {
+                                    var examCounterRowspan = group.Count();
+
+                                    foreach (var row in group.Select((item, index) => new { item, index }))
+                                    {
+                                        <tr>
+                                            @if (row.index == 0) // First row in the group
+                                            {
+                                                <td data-label="Exam Tries" class="text-nowrap sort-Tries align-middle" rowspan="@examCounterRowspan">
+                                                    <a style="text-decoration: none; color: inherit;">@row.item.ExamCounter</a>
+                                                </td>
+                                            }
+
+                                            <td data-label="Title" class="text-nowrap sort-Title align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Title</a>
+                                            </td>
+                                          
+                                            <td data-label="Item Number" class="text-nowrap sort-ItemNo align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.ItemNo</a>
+                                            </td>
+
+                                            <td data-label="Item Number" class="text-nowrap sort-Question">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Question</a>
+                                            </td>
+
+                                            <td data-label="Choice A" class="text-nowrap sort-ChoiceA align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceA</a>
+                                            </td>
+
+                                            <td data-label="Choice B" class="text-nowrap sort-ChoiceB align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceB</a>
+                                            </td>
+
+                                            <td data-label="Choice C" class="text-nowrap sort-ChoiceC align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceC</a>
+                                            </td>
+
+                                            <td data-label="Choice D" class="text-nowrap sort-ChoiceD align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.choiceD</a>
+                                            </td>
+
+                                            <td data-label="Correct Answer" class="text-nowrap sort-CorrectAns align-middle">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Answer</a>
+                                            </td>
+
+                                            <td data-label="User Answer" class="text-nowrap sort-UserAns align-middle"
+                                                style="background-color:@(row.item.UserAnswer == row.item.Answer ? "#d4edda" : "#f8d7da");">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.UserAnswer</a>
+                                            </td>
+
+                                            @* Badge color based on the response *@
+                                            @{
+                                                string badgeClass = row.item.Response switch
+                                                {
+                                                    "Correct" => "bg-success-lt",
+                                                    "Wrong" => "bg-danger-lt",
+                                                    _ => "bg-secondary-lt"
+                                                };
+                                            }
+
+                                            <td class="align-middle">
+                                                <span class="badge @badgeClass">@row.item.Response</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+@* 
+                @if (@Model.pfp.IsWritten == false)
+                {
+                    <div class="table-responsive">
+                        <table class="table text-muted table-mobile-sm" id="datatable">
+
+                            <thead class="table-thead">
+                                <tr>
+                                    <th><button class="table-sort" data-sort="sort-Tries">Exam Tries</button></th>
+                                    <th><button class="table-sort" data-sort="sort-Title">Title</button></th>
+                                    <th><button class="table-sort" data-sort="sort-ItemNo">Item Number</button></th>
+                                    <th><button class="table-sort" data-sort="sort-Grade">Grade</button></th>
+                                    <th>Response</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody class="table-tbody">
+                                @foreach (var group in Model.UserExam.GroupBy(x => x.ExamCounter))
+                                {
+                                    var examCounterRowspan = group.Count();
+
+                                    foreach (var row in group.Select((item, index) => new { item, index }))
+                                    {
+                                        <tr>
+                                            @if (row.index == 0) // First row in the group
+                                            {
+                                                <td data-label="Exam Tries" class="text-nowrap sort-Tries align-middle" rowspan="@examCounterRowspan">
+                                                    <a style="text-decoration: none; color: inherit;">@row.item.ExamCounter</a>
+                                                </td>
+                                            }
+
+                                        <td data-label="Title" class="text-nowrap sort-Title">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Title</a>
+                                        </td>
+
+
+                                        <td data-label="Item Number" class="text-nowrap sort-ItemNo">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.ItemNo</a>
+                                        </td>
+
+                                        <td data-label="Grade" class="text-nowrap sort-Grade">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.Grade</a>
+                                        </td>
+
+                                        <td data-label="Response" class="text-nowrap">
+                                                <a style="text-decoration: none; color: inherit;">@row.item.UserAnswer</a>
+                                        </td>
+
+
+                                    </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+
+
+
+                }
+ *@
+                @if (Model.UserExam == null || !Model.UserExam.Any())
+                {
+                    <div class="text-center text-muted py-3">No Available Data</div>
+                }
+
+
+
+
+                <div class="card-footer d-flex align-items-center">
+                    <ul class="pagination m-0 ms-auto"></ul>
+                </div>
+
+
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+

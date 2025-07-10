@@ -1,0 +1,557 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | Training System</title>
+    <link rel="stylesheet" href="~/css/tabler.min.css" />
+    <link rel="stylesheet" href="~/css/tabler-vendors.min.css" />
+    <link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css?1684106062" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="icon" href="Images/favicon.jpg" />
+
+    <style>
+
+        :root {
+            --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+
+        body {
+            font-feature-settings: "cv03", "cv04", "cv11";
+        }
+
+        .ts-dropdown {
+            z-index: 10001;
+        }
+
+        canvas {
+            cursor: crosshair;
+        }
+
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 160px; /* Adjust width as needed */
+                background-color: black;
+                color: #fff;
+                text-align: center;
+                border-radius: 5px;
+                padding: 5px 0;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%; /* Position above the text */
+                left: 50%;
+                margin-left: -80px; /* Center the tooltip */
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+
+
+        .center-content {
+            text-align: center; /* Center text horizontally */
+            vertical-align: middle; /* Center content vertically */
+        }
+
+        .avatar {
+            display: block;
+            margin: 0 auto; /* Center the avatar image horizontally */
+        }
+    </style>
+
+
+
+</head>
+
+
+<body>
+    <div class="page">
+        <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h1 class="navbar-brand navbar-brand-autodark">
+                    TRAINING SYSTEM
+                </h1>
+                <div class="navbar-nav flex-row d-lg-none">
+
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link d-flex align-items-center text-reset p-0" data-bs-toggle="dropdown">
+                            <img src="/Images/defAccImage.jpg" alt="Avatar" class="avatar avatar-sm">
+                            <div class="d-none d-xl-flex flex-column ps-2 ms-auto text-end">
+                                <div>@User.Identity.Name</div>
+                                <div class="mt-1 small text-muted">@User.FindFirst("def_dept")?.Value</div>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item dropdown">
+                        <a href="#offcanvasEnd" class="d-sm-none " data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasEnd" id="question-mark">
+                            <span class="text-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
+                                </svg>
+                            </span>
+
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+
+                        <li class="nav-item  @(ViewBag.Home == "active" ? "active" : "")">
+                      
+                            <a class="nav-link" href="@Url.Action("Index", "Home")">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-home"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                                </span>
+
+                                <span class="nav-link-title">
+                                    Home
+                                </span>
+
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown @(ViewBag.Training == "active" ? "active" : "")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-certificate"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" /><path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" /><path d="M6 9l12 0" /><path d="M6 12l3 0" /><path d="M6 15l2 0" /></svg>
+                                </span>
+                                <span class="nav-link-title">Training</span>
+                            </a>
+
+                        
+
+                            <div class="dropdown-menu @(ViewBag.Training == "active" ? "show" : "")">
+                                <a class="dropdown-item" href="@Url.Action("Index", "Group")">Batch Training</a>
+                                <a class="dropdown-item" href="@Url.Action("Index", "Training")">List of Training</a>
+                                <a class="dropdown-item" href="@Url.Action("Index", "Question")">List of Examination</a>
+                            </div>
+                        </li>
+
+
+
+
+                        <li class="nav-item  @(ViewBag.Profile == "active" ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Index", "Profile")">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h2.5" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+                                </span>
+
+                                <span class="nav-link-title">
+                                    Profile
+                                </span>
+
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item  @(ViewBag.eval == "active" ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Index", "FinalEvaluation")">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M9 14l2 2l4 -4" /></svg>
+
+
+                                    </span>
+
+                                <span class="nav-link-title">
+                                    Post Evaluation
+                                </span>
+
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown @(ViewBag.reports == "active" ? "active" : "")">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block position-relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-text"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M9 12h6" /><path d="M9 16h6" /></svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    Reports
+                                </span>
+                            </a>
+                            <div class="dropdown-menu @(ViewBag.reports == "active" ? "show" : "")">
+                                <div class="dropdown-menu-columns">
+                                    <div class="dropdown-menu-column">
+                                        <a class="dropdown-item" href="@Url.Action("ProjectReport", "Group")">Group Report</a>
+                                        <a class="dropdown-item" href="@Url.Action("FinishedProjectReport", "Group")">Finished Group Report</a>
+                                        <a class="dropdown-item" href="@Url.Action("ScheduleReport", "Schedule")">Schedule Report</a>
+                                        <a class="dropdown-item" href="@Url.Action("TrainingReport", "Training")">Training Report</a>
+                                        <a class="dropdown-item" href="@Url.Action("ReportExam", "Question")">Examination Report</a>
+                                        <a class="dropdown-item" href="@Url.Action("TestTaker", "Schedule")">Test Takers Report</a>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+
+
+
+                    </ul>
+
+                </div>
+
+                @*for pdf*@
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="pdfViewer">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title">PDF Viewer</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div id="pdfContainer">
+                            <!-- PDF will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+
+        <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none">
+            <div class="container-xl">
+
+                <div class="navbar-nav flex-row order-md-last">
+
+
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+
+                            <div class="d-none d-xl-block ps-2">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <div>@User.Identity.Name</div>
+                                    <div class="mt-1 small text-muted">@User.FindFirst("def_dept")?.Value</div>
+                                }
+
+                            </div>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+                        </div>
+
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#offcanvasEnd" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasEnd" id="question-mark">
+                            <span class="text-dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
+                                </svg>
+                            </span>
+
+                        </a>
+
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+
+        <div class="page-wrapper">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/list.js/dist/list.js"></script>
+    <script src="~/lib/litepicker/dist/litepicker.js"></script>
+    <script src="~/lib/tom-select/dist/js/tom-select.base.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+
+
+    <!-- Tabler Core -->
+    @*
+    <script src="./dist/js/tabler.min.js?1684106062"></script>
+    <script src="./dist/js/demo.min.js?1684106062"></script> *@
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+
+
+    <div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasEnd" aria-labelledby="offcanvasEndLabel">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title" id="offcanvasEndLabel">Manual</h2>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+
+                @* <embed src="@Url.Action("DisplayPdf", "UserManual")" type="application/pdf" width="100%" height="600" /> *@
+
+                @if (ViewBag.Home == "active")
+                {
+                    <embed src="@Url.Action("DisplayAll", "Manuals")" type="application/pdf" width="100%" height="850" />
+                }
+
+                @if (ViewBag.Profile == "active")
+                {
+                    <embed src="@Url.Action("DisplayProfile", "Manuals")" type="application/pdf" width="100%" height="850" />
+                }
+
+                @if (ViewBag.Training == "active")
+                {
+                    <embed src="@Url.Action("DisplayTraining", "Manuals")" type="application/pdf" width="100%" height="850" />
+                }
+                @if (ViewBag.eval == "active")
+                {
+                    <embed src="@Url.Action("DisplayPost", "Manuals")" type="application/pdf" width="100%" height="850" />
+                }
+
+
+                @if (ViewBag.reports == "active")
+                {
+                    <embed src="@Url.Action("DisplayReports", "Manuals")" type="application/pdf" width="100%" height="850" />
+                }
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+    @*confirm*@
+    <div class="modal modal-blur fade" id="confirm-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="confirm-title" class="modal-title"></div>
+                    <div id="confirm-message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn me-auto" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger btn_finish" id="confirm-yes">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*error*@
+    <div class="modal modal-blur fade" id="error-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="error-title" class="modal-title">@TempData["Error Title"]</div>
+                    <div id="error-message">@TempData["Error Message"]</div>
+                </div>
+                <div class="modal-footer">
+                    <button id="error-ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*success*@
+    <div class="modal modal-blur fade" id="success-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="success-title" class="modal-title">@TempData["Success Title"]</div>
+                    <div id="success-message">@TempData["Success Message"]</div>
+                </div>
+                <div class="modal-footer">
+                    <button id="success-ok" type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+
+            if ($("#success-title").html() != "") {
+                $("#success-modal").modal("show")
+            }
+
+            if ($("#error-title").html() != "") {
+                $("#error-modal").modal("show")
+            }
+
+
+        })
+
+        $(".date-input").each(function () {
+            var today = new Date(); // Get today's date
+            new Litepicker({
+                element: this,
+                buttonText: {
+                    previousMonth: `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>`,
+                    nextMonth: `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>`,
+                },
+
+                firstDay: 0,
+
+            });
+        })
+
+
+        $('.tom-select').each(function () {
+            var data = $(this);
+            new TomSelect(data.get(0), {
+                copyClassesToDropdown: false,
+                dropdownParent: 'body',
+                controlInput: '<input>',
+                render: {
+                    item: function (data, escape) {
+                        if (data.customProperties) {
+                            return '<div><span class="dropdown-item-indicator">' + data.customProperties + '</span>' + escape(data.text) + '</div>';
+                        }
+                        return '<div>' + escape(data.text) + '</div>';
+                    },
+                    option: function (data, escape) {
+                        if (data.customProperties) {
+                            return '<div><span class="dropdown-item-indicator">' + data.customProperties + '</span>' + escape(data.text) + '</div>';
+                        }
+                        return '<div>' + escape(data.text) + '</div>';
+                    },
+                },
+            });
+        });
+
+        $('.tom-select-subtitle').each(function () {
+            var data = $(this);
+            new TomSelect(data.get(0), {
+                copyClassesToDropdown: false,
+                dropdownParent: 'body',
+                controlInput: '<input>',
+                render: {
+                    item: function (data, escape) {
+                        return '<div><span class="d-block">' + escape(data.text) + '</span></div>';
+                    },
+                    option: function (data, escape) {
+                        return '<div><span class="d-block">' + escape(data.text) + '</span><span class="d-block fs-5 opacity-70">' + escape(data.subtitle) + '</span></div>';
+                    },
+                },
+            });
+        });
+
+        $('.tom-select-subtitle2').each(function () {
+            var data = $(this);
+            new TomSelect(data.get(0), {
+                copyClassesToDropdown: false,
+                dropdownParent: 'body',
+                controlInput: '<input>',
+                render: {
+                    item: function (data, escape) {
+                        return '<div><span class="d-block">' + escape(data.text) + '</span></div>';
+                    },
+                    option: function (data, escape) {
+                        return '<div><span class="d-block">' + escape(data.text) + '</span><span class="d-block fs-5 opacity-70">' + escape(data.subtitle) + '</span><span class="d-block fs-5 opacity-70"> ' + escape(data.subtitle2) + '</span></div>';
+                    },
+                },
+            });
+        });
+
+
+
+
+
+
+        $(".check").change(function () {
+            if ($(this).prop('checked')) {
+
+                $(this).parent().parent().find(".date-input").val("1991-01-01")
+                return
+            }
+
+            $(this).parent().parent().find(".date-input").val("2024-01-01")
+
+        })
+
+        //datatable
+        var columns = [];
+        $(".table-thead").find(".table-sort").each(function () {
+            columns.push($(this).data("sort"));
+        });
+
+        const list = new List('table-default', {
+            sortClass: 'table-sort',
+            listClass: 'table-tbody',
+            page: 10,
+            pagination: true,
+            valueNames: columns
+        });
+
+        $("#entries").change(function () {
+            list.page = $(this).val();
+            list.update();
+        });
+
+
+        // Function to update profile count
+        function updateProfileCount() {
+            const totalItems = list.size();
+
+            $("#profileCount").text(`${totalItems} people`);
+        }
+
+        // Update profile count on initialization
+        updateProfileCount();
+
+        // Update profile count on page change
+        list.on('updated', function () {
+            updateProfileCount();
+        });
+
+
+
+        // const exportButton = document.getElementById('btn-export');
+        // const table = document.getElementById('datatable');
+        // const filename = $("#datatable").data("filename");
+
+        // exportButton.addEventListener('click', () => {
+        //     list.page = 99999999;
+        //     list.update();
+        //     const wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
+        //     XLSX.writeFile(wb, filename + '.xlsx');
+
+        //     list.page = $("#entries").val();
+        //     list.update();
+        // });
+
+
+    </script>
+
+
+
+</body>
+
+
+
+
+</html>
