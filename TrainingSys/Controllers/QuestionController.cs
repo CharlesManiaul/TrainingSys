@@ -226,9 +226,6 @@ namespace TrainingSys.Controllers
         }
 
 
-
-
-
         [AllowAnonymous]
         [Route("/Question/PracticalTest/{TEId}/{Id}/{EmpId}")]
         public IActionResult PracticalTest(int Id, int TEId, int EmpId)
@@ -382,7 +379,7 @@ namespace TrainingSys.Controllers
             Exam exam = new Exam();
             string sql = "";
 
-            sql = "SELECT * FROM ExamHeader where Id = @Id";
+            sql = "SELECT * FROM ExamHeader where Id =   @Id";
             exam = db.QueryFirstOrDefault<Exam>(sql, new { Id });
 
        
@@ -798,11 +795,11 @@ namespace TrainingSys.Controllers
 
         public IActionResult Revise(int Id, bool IsWritten)
         {
-            var rev = db.ExecuteScalar("sp_RevisionExam", new { Id, ReviseBy = HttpContext.User.FindFirstValue(ClaimTypes.Name), IsWritten }, commandType: System.Data.CommandType.StoredProcedure);
+            var rev = db.ExecuteScalar("sp_RevisionExam", new { Id, IsWritten, ReviseBy = HttpContext.User.FindFirstValue(ClaimTypes.Name)}, commandType: System.Data.CommandType.StoredProcedure);
             if (rev.ToString() != "Successful")
             {
                 TempData["Error Title"] = "For Revisioning failed";
-                TempData["Error Message"] = "For Revisioning of Exam Failed.";
+                TempData["Error Message"] = rev.ToString();
                 return RedirectToAction("Index");
             }
 

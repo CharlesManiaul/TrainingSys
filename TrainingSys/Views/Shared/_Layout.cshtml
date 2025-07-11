@@ -195,7 +195,7 @@
                                 <div class="dropdown-menu-columns">
                                     <div class="dropdown-menu-column">
                                         <a class="dropdown-item" href="@Url.Action("ProjectReport", "Group")">Group Report</a>
-                                        <a class="dropdown-item" href="@Url.Action("FinishedProjectReport", "Group")">Finished Group Report</a>
+                                       
                                         <a class="dropdown-item" href="@Url.Action("ScheduleReport", "Schedule")">Schedule Report</a>
                                         <a class="dropdown-item" href="@Url.Action("TrainingReport", "Training")">Training Report</a>
                                         <a class="dropdown-item" href="@Url.Action("ReportExam", "Question")">Examination Report</a>
@@ -493,40 +493,64 @@
 
         })
 
-        //datatable
-        var columns = [];
-        $(".table-thead").find(".table-sort").each(function () {
-            columns.push($(this).data("sort"));
-        });
+            document.addEventListener("DOMContentLoaded", function () {
+                var columns = [];
+                $(".table-thead").find(".table-sort").each(function () {
+                    columns.push($(this).data("sort"));
+                });
 
-        const list = new List('table-default', {
-            sortClass: 'table-sort',
-            listClass: 'table-tbody',
-            page: 10,
-            pagination: true,
-            valueNames: columns
-        });
+                if (document.getElementById("table-default")) {
+                    const list = new List('table-default', {
+                        sortClass: 'table-sort',
+                        listClass: 'table-tbody',
+                        valueNames: columns,
+                        page: parseInt($("#entries").val()) || 10,
+                        pagination: true
+                    });
 
-        $("#entries").change(function () {
-            list.page = $(this).val();
-            list.update();
-        });
+                    // Entries per page
+                    $("#entries").on("change", function () {
+                        const val = parseInt($(this).val()) || 10;
+                        list.page = val;
+                        list.update();
+                    });
 
+                    // Tab filtering
+                    $("#statusTabs .nav-link").on("click", function (e) {
+                        e.preventDefault();
+                        $("#statusTabs .nav-link").removeClass("active");
+                        $(this).addClass("active");
 
-        // Function to update profile count
-        function updateProfileCount() {
-            const totalItems = list.size();
+                        const selectedStatus = $(this).data("status");
 
-            $("#profileCount").text(`${totalItems} people`);
-        }
+                        list.filter(function (item) {
+                            if (selectedStatus === "All") return true;
+                            return item.values().Status === selectedStatus;
+                        });
 
-        // Update profile count on initialization
-        updateProfileCount();
+                        list.update();
+                        updateProfileCount();
+                    });
 
-        // Update profile count on page change
-        list.on('updated', function () {
-            updateProfileCount();
-        });
+                    // Count display
+                    function updateProfileCount() {
+                        const totalItems = list.matchingItems.length;
+                        if ($("#profileCount").length) {
+                            $("#profileCount").text(`${totalItems} item(s)`);
+                        }
+                    }
+
+                    // Default tab filter
+                    const defaultTab = $("#statusTabs .nav-link.active").data("status");
+                    if (defaultTab) {
+                        list.filter(item => item.values().Status === defaultTab);
+                        list.update();
+                        updateProfileCount();
+                    }
+
+                    list.on('updated', updateProfileCount);
+                }
+            });
 
 
 

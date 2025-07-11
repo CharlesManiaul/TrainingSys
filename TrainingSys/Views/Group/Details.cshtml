@@ -77,6 +77,7 @@
                                 <th>EXAMINATION</th>
                                 <th><button class="table-sort" data-sort="sort-ID">Training ID</button></th>
                                 <th><button class="table-sort" data-sort="sort-Title">Training Title</button></th>
+                                <th><button class="table-sort" data-sort="sort-Exam">Exam Title</button></th>
                                 <th><button class="table-sort" data-sort="sort-Description">Description</button></th>
                                 <th><button class="table-sort" data-sort="sort-Validity">Validity</button></th>
                                 <th><button class="table-sort" data-sort="sort-Amount">Amount</button></th>
@@ -153,6 +154,10 @@
 
                                     <td data-label="Training Title" class="text-nowrap sort-Title">
                                         <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.Title</a>
+                                    </td>
+
+                                    <td data-label="Exam Title" class="text-nowrap sort-Exam">
+                                        <a href="/Group/Details/Information/@row.PMId/@row.PTId" style="text-decoration: none; color: inherit;">@row.ExamTitle</a>
                                     </td>
 
 

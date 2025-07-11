@@ -38,16 +38,44 @@ namespace TrainingSys.Controllers
         {
             TrainGroup group = new TrainGroup();
             ViewBag.Training = "active";
-            string sql = "";
 
-            group.trainGroup = db.Query<TrainGroup>("sp_ReportProjectStatus_All");
+            // Fetch project statuses
+            var allGroups = db.Query<TrainGroup>("sp_ReportProjectStatus_All").ToList();
 
+            // Filter into categories
+            var openList = new List<TrainGroup>();
+            var completedList = new List<TrainGroup>();
+            var cancelList = new List<TrainGroup>();
 
-            sql = @"Select * FROM TrainingMaster Where (IsCancel = 0 or IsCancel is null)";
+            foreach (var item in allGroups)
+            {
+                int total = item.TotalTraining ?? 0;
+                int finished = item.Finished ?? 0;
+
+                if (item.IsCancel == true)
+                {
+                    cancelList.Add(item);
+                }
+                else if (total > 0 && finished == total)
+                {
+                    completedList.Add(item);
+                }
+                else
+                {
+                    openList.Add(item);
+                }
+            }
+
+            // Combine all into one list to keep List.js filtering client-side
+            group.trainGroup = openList.Concat(completedList).Concat(cancelList).ToList();
+
+            // Load training master (no change)
+            string sql = @"Select * FROM TrainingMaster Where (IsCancel = 0 or IsCancel is null)";
             group.trainMaster = db.Query<TrainMaster>(sql).ToList();
 
             return View(group);
         }
+
 
         public IActionResult addGroup(TrainGroup trainGroup)
         {

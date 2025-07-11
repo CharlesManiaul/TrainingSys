@@ -36,13 +36,28 @@
 
 
 
+
+
 <div class="page-body">
-    <div class="container-fluid ">
+    <div class="container-fluid">
         <div class="card">
 
-            <div id="table-default">
-                <div class="col- d-lg-flex px-3 pt-3">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs px-3 pt-3" id="statusTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" data-status="Open" href="#openTab">Open</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-status="Completed" href="#completedTab">Completed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-status="Cancel" href="#cancelTab">Cancel</a>
+                </li>
+            </ul>
 
+            <!-- Table Wrapper -->
+            <div id="table-default">
+                <div class="col- d-lg-flex px-3 pt-3 align-items-center">
                     <div class="d-flex text-center text-lg-start mb-3">
                         <div class="text-muted">
                             Show
@@ -51,144 +66,143 @@
                             </div>
                             entries
                         </div>
-
                     </div>
 
+                    <!-- Search -->
                     <div class="input-icon mb-3 ms-auto">
-                        <input type="search" class="search form-control" placeholder="Search">
+                        <input type="search" class="search form-control" placeholder="Search...">
                         <span class="input-icon-addon">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                                <path d="M21 21l-6 -6" />
+                            </svg>
                         </span>
-
                     </div>
+
+                    <!-- Profile Count -->
+                    <div class="ms-3 text-muted small" id="profileCount"></div>
                 </div>
 
                 <hr class="m-0">
-                <div class="table-responsive">
-                    <table class="table text-muted table-mobile-sm" id="datatable" data-filename="Transfer Report">
 
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table text-muted table-mobile-sm" id="datatable">
                         <thead class="table-thead">
                             <tr>
-
-                                <th><button class="table-sort" data-sort="sort-ID">Group ID</button></th>
-                                <th><button class="table-sort" data-sort="sort-Title">Group Training Title</button></th>
-                                <th><button class="table-sort" data-sort="sort-crtdBy">Created By</button></th>
-                                <th><button class="table-sort" data-sort="sort-crtdDate">Date Created</button></th>
-                                <th><button class="table-sort" data-sort="sort-Total">Total Training</button></th>
-                                <th><button class="table-sort" data-sort="sort-Finished">Finished Training</button></th>
-                                <th><button class="table-sort" data-sort="sort-Scheduled">Scheduled Training</button></th>
-                                <th><button class="table-sort" data-sort="sort-Unscheduled">Unscheduled Training</button></th>
-                                <th><button class="table-sort" data-sort="sort-Progress">Progress</button></th>
+                                <th><button class="table-sort" data-sort="ID">Group ID</button></th>
+                                <th><button class="table-sort" data-sort="Title">Group Training Title</button></th>
+                                <th><button class="table-sort" data-sort="crtdBy">Created By</button></th>
+                                <th><button class="table-sort" data-sort="crtdDate">Date Created</button></th>
+                                <th><button class="table-sort" data-sort="Total">Total Training</button></th>
+                                <th><button class="table-sort" data-sort="Finished">Finished Training</button></th>
+                                <th><button class="table-sort" data-sort="Scheduled">Scheduled</button></th>
+                                <th><button class="table-sort" data-sort="Unscheduled">Unscheduled</button></th>
+                                <th><button class="table-sort" data-sort="Progress">Progress</button></th>
+                                <th class="d-none"><button class="table-sort" data-sort="Status">Status</button></th>
                                 <th>Action</th>
-
                             </tr>
                         </thead>
-
                         <tbody class="table-tbody">
                             @if (!Model.trainGroup.Any())
                             {
                                 <tr>
-                                    <td colspan="10" class="text-center text-muted">No data available</td>
+                                    <td colspan="11" class="text-center text-muted">No data available</td>
                                 </tr>
-
                             }
                             else
                             {
-                                @foreach (var row in Model.trainGroup)
+                                foreach (var row in Model.trainGroup)
                                 {
-                                    var totalSessions = row?.TotalTraining ?? 0;
-                                    var completedSessions = row?.Finished ?? 0;
+                                    var total = row.TotalTraining ?? 0;
+                                    var finished = row.Finished ?? 0;
+                                    var scheduled = row?.Scheduled ?? 0;
+                                    var unscheduled = row?.UnScheduled ?? 0;
+                                    var progress = (total > 0) ? ((double)finished / total) * 100 : 0;
+                                    progress = Math.Min(progress, 100);
 
-
-                                    // Calculate progress percentage
-                                    var progressPercentage = (totalSessions > 0)
-                                    ? ((double)completedSessions / totalSessions) * 100
-                                    : 0;
-
-                                    // Ensure the progress percentage does not exceed 100
-                                    progressPercentage = Math.Min(progressPercentage, 100);
+                                    string status = row.IsCancel == true ? "Cancel"
+                                                  : (total > 0 && finished == total) ? "Completed"
+                                                  : "Open";
+                                    
+                                    string link = Url.Action("Details", "Group", new { id = row.PMId });
 
                                     <tr>
-
-
-                                        <td data-label="Group Id" class="text-nowrap sort-ID">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.PMId</a>
+                                        <td class="text-nowrap ID">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@row.PMId</a>
                                         </td>
-
-                                        <td data-label="Group Training Title" class="text-nowrap sort-Title">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.ProjectName</a>
+                                        <td class="text-nowrap Title">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@row.ProjectName</a>
                                         </td>
-
-                                        <td data-label="Created By" class="text-nowrap sort-crtdBy">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.CrtdBy</a>
+                                        <td class="text-nowrap crtdBy">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@row.CrtdBy</a>
                                         </td>
-
-                                        <td data-label="Date Created" class="text-nowrap sort-crtdDate">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.CrtdDate</a>
+                                        <td class="text-nowrap crtdDate">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@row.CrtdDate</a>
                                         </td>
-
-                                        <td data-label="Total Training" class="text-nowrap sort-Total">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.TotalTraining</a>
+                                        <td class="text-nowrap Total">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@total</a>
                                         </td>
-
-                                        <td data-label="Finished Training" class="text-nowrap sort-Finished">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.Finished</a>
+                                        <td class="text-nowrap Finished">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@finished</a>
                                         </td>
-
-                                        <td data-label="Scheduled Training" class="text-nowrap sort-Scheduled">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.Scheduled</a>
+                                        <td class="text-nowrap Scheduled">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@scheduled</a>
                                         </td>
-
-                                        <td data-label="UnScheduled Training" class="text-nowrap sort-Unscheduled">
-                                            <a href="Group/Details/@row.PMId" style="text-decoration: none; color: inherit;">@row.UnScheduled</a>
+                                        <td class="text-nowrap Unscheduled">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">@unscheduled</a>
                                         </td>
-
-
-
-                                        <td>
-                                            <div class="my-2">
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                                                         role="progressbar"
-                                                         style="width: @progressPercentage%; font-size: 20px; color: #fff; line-height: 40px;">
-                                                        @progressPercentage.ToString("0.00")%
+                                        <td class="Progress">
+                                            <a href="@link" style="text-decoration: none; color: inherit;">
+                                                <div class="my-2">
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                                             role="progressbar"
+                                                             style="width: @progress%; font-size: 14px; color: #fff;">
+                                                            @progress.ToString("0.00")%
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </td>
-
+                                        <td class="d-none Status">@status</td>
                                         <td>
-                                            <button type="button" class="btn btn-outline-danger btn_delete" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-pid="@row.PMId">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                            <button type="button" class="btn btn-outline-danger btn_delete"
+                                                    data-bs-toggle="modal" data-bs-target="#ModalDelete"
+                                                    data-pid="@row.PMId">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round" class="icon icon-tabler icon-tabler-trash">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M4 7l16 0" />
+                                                    <path d="M10 11l0 6" />
+                                                    <path d="M14 11l0 6" />
+                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                </svg>
                                             </button>
                                         </td>
-
-
                                     </tr>
-
                                 }
-
                             }
-
-
-
                         </tbody>
-
                     </table>
-
                 </div>
 
-
+                <!-- Pagination -->
                 <div class="card-footer d-flex align-items-center">
                     <ul class="pagination m-0 ms-auto"></ul>
                 </div>
-
             </div>
-
-
         </div>
     </div>
 </div>
+
+
 @using (Html.BeginForm("addGroup", "Group", FormMethod.Post, new { id = "form-add-group-details" }))
 {
 

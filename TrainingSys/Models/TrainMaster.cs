@@ -20,6 +20,7 @@
         public DateTime crtdDate { get; set; }
         public int TotAttendee { get; set; }
         public bool HasExam { get; set; }
+        public string ExamTitle { get; set; }
 
         public IEnumerable<TrainMaster> trainMaster { get; set; }
 

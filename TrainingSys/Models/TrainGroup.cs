@@ -32,12 +32,10 @@ namespace TrainingSys.Models
         public int Scheduled { get; set; }
         public int UnScheduled { get; set; }
 
-
-
-
-
         public int numTrain { get; set; }
 
+
+      
         public IEnumerable<TrainGroup> trainGroup { get; set; }
 
         public List<TrainMaster> trainMaster { get; set; }
@@ -64,6 +62,17 @@ namespace TrainingSys.Models
 
         public List<Attachment> attachments { get; set; }
         public IFormFileCollection? Attachment { get; set; }
+
+
+
+
+        //for new tabs
+
+        public List<TrainGroup> OpenGroups { get; set; }
+        public List<TrainGroup> CompletedGroups { get; set; }
+        public List<TrainGroup> CancelGroups { get; set; }
+        public List<TrainMaster> TrainMasterList { get; set; }
+
 
     }
 

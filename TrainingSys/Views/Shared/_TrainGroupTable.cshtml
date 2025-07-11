@@ -1,0 +1,65 @@
+﻿@model List<TrainGroup>
+
+<div class="table-responsive">
+    <table class="table text-muted table-mobile-sm table-hover">
+        <thead class="table-thead">
+            <tr>
+                <th><button class="table-sort" data-sort="sort-ID">Group ID</button></th>
+                <th><button class="table-sort" data-sort="sort-Title">Group Training Title</button></th>
+                <th><button class="table-sort" data-sort="sort-crtdBy">Created By</button></th>
+                <th><button class="table-sort" data-sort="sort-crtdDate">Date Created</button></th>
+                <th><button class="table-sort" data-sort="sort-Total">Total</button></th>
+                <th><button class="table-sort" data-sort="sort-Finished">Finished</button></th>
+                <th><button class="table-sort" data-sort="sort-Scheduled">Scheduled</button></th>
+                <th><button class="table-sort" data-sort="sort-Unscheduled">Unscheduled</button></th>
+                <th><button class="table-sort" data-sort="sort-Progress">Progress</button></th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="list table-tbody">
+            @if (!Model.Any())
+            {
+                <tr><td colspan="10" class="text-center text-muted">No data available</td></tr>
+            }
+            else
+            {
+                foreach (var row in Model)
+                {
+                    var total = row.TotalTraining ?? 0;
+                    var finished = row.Finished ?? 0;
+                    var progress = (total > 0) ? (double)finished / total * 100 : 0;
+                    progress = Math.Min(progress, 100);
+
+                    <tr>
+                        <td><span class="sort-ID">@row.PMId</span></td>
+                        <td><span class="sort-Title">@row.ProjectName</span></td>
+                        <td><span class="sort-crtdBy">@row.CrtdBy</span></td>
+                        <td><span class="sort-crtdDate">@row.CrtdDate</span></td>
+                        <td><span class="sort-Total">@row.TotalTraining</span></td>
+                        <td><span class="sort-Finished">@row.Finished</span></td>
+                        <td><span class="sort-Scheduled">@row.Scheduled</span></td>
+                        <td><span class="sort-Unscheduled">@row.UnScheduled</span></td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                     style="width: @progress%; font-size: 14px;">
+                                    <span class="sort-Progress">@progress.ToString("0.00")%</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger btn_delete"
+                                data-bs-toggle="modal" data-bs-target="#ModalDelete" data-pid="@row.PMId">
+                                🗑
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card-footer d-flex align-items-center">
+    <ul class="pagination m-0 ms-auto"></ul>
+</div>
