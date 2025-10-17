@@ -605,6 +605,7 @@ namespace TrainingSys.Controllers
                 exam.ExamDetails.SubType,
                 exam.ExamDetails.Id,
                 exam.ExamDetails.ExamId,
+                exam.ExamDetails.PracId,
                 exam.ExamDetails.ItemNo,
                 exam.ExamDetails.Question,
                 exam.ExamDetails.choiceA,

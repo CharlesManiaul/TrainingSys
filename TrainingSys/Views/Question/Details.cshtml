@@ -299,6 +299,7 @@
                                         data-bs-toggle="modal" data-bs-target="#modal-EditQuestion"
                                         data-wid="@items.Id"
                                         data-tid="@items.ExamId"
+                                        data-ptid="@items.PracId"
                                         data-ino="@items.ItemNo"
                                         data-quest="@items.Question">
 
@@ -469,6 +470,7 @@
     </div>
 }
 
+
 @*MODAL Edit QUESTIONS*@
 @using (Html.BeginForm("EditQuestion", "Question", FormMethod.Post, new { id = "form-Edit-Question" }))
 {
@@ -485,6 +487,9 @@
                     @Html.HiddenFor(m => m.ExamDetails.Id, new { id = "view_ID" })
                     @Html.HiddenFor(m => m.ExamDetails.ExamId, new { id = "view_EID" })
                     @Html.HiddenFor(m => m.IsWritten)
+                    @Html.HiddenFor(m => m.IsPractical)
+                    @Html.HiddenFor(m => m.ExamDetails.PracId, new { id = "view_PEID" })
+
 
                     <div class="mb-3">
                         <label class="form-label">Number:</label>
@@ -816,6 +821,7 @@
         $(".editQuestion").click(function () {
             const wId = $(this).data("wid");
             const tId = $(this).data("tid");
+            const ptId = $(this).data("ptid");
             const INo = $(this).data("ino");
             const Quest = $(this).data("quest");
             const cA = $(this).data("ca");
@@ -828,7 +834,9 @@
             const type = $(this).data("type");
             const subid = $(this).data("subid");
 
+
             // Populate fields
+            $("#view_PEID").val(ptId);
             $("#view_ID").val(wId);
             $("#view_EID").val(tId);
             $("#view_INo").val(INo);
